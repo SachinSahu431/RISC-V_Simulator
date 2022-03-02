@@ -9,12 +9,8 @@ public class Memory {
 
     // Constructor to initialise all of it's stuffs
     Memory() {
-<<<<<<< HEAD
-
-=======
         // clearMemory();
         // printMemory();
->>>>>>> 9f9a3ac4bd945f18039d8b8127292e5b295ae8b8
     }
 
     // Non-Arithmetic Operations
@@ -111,6 +107,9 @@ public class Memory {
     public void printMemory() {
         System.out.println("\nMemory Values(non-zero only):");
         for (int i = 0; i < 1000; i++) {
+            // Solution : initialise boolean array as flag if memory is written then set
+            // flag to true which is
+            // false by default and now print the memory
             if (this.Memory[i] != 0) {
                 System.out.println("Memory[" + i + "]: " + this.Memory[i]);
             }
