@@ -9,7 +9,8 @@ public class Memory {
 
     // Constructor to initialise all of it's stuffs
     Memory() {
-
+        // clearMemory();
+        // printMemory();
     }
 
     // Non-Arithmetic Operations
@@ -30,6 +31,11 @@ public class Memory {
     }
 
     // Arithmetic Operations (Ref.:https://shakti.org.in/docs/risc-v-asm-manual.pdf)
+
+    // LI Destination Register (rd), Immediate data
+    void li(int regIndex, int immediate) {
+        this.Register[regIndex] = immediate;
+    }
 
     // ADD Destination Register (rd), Source Register (rs1), Source Register (rs2)
     void add(int rd, int rs1, int rs2) {
@@ -83,6 +89,35 @@ public class Memory {
     // Remainder is stored in the destination register
     void rem(int rd, int rs1, int rs2) {
         this.Register[rd] = this.Register[rs1] % this.Register[rs2];
+    }
+
+    /**************************************************************************/
+
+    // print specific memory
+    public void printMemory(int index) {
+        System.out.println("Memory " + index + ": " + this.Memory[index]);
+    }
+
+    // set specific memory
+    public void setMemory(int index, int data) {
+        this.Memory[index] = data;
+    }
+
+    // Only non-zero memory will be printed
+    public void printMemory() {
+        System.out.println("\nMemory Values(non-zero only):");
+        for (int i = 0; i < 1000; i++) {
+            if (this.Memory[i] != 0) {
+                System.out.println("Memory[" + i + "]: " + this.Memory[i]);
+            }
+        }
+    }
+
+    public void clearMemory() {
+        for (int i = 0; i < 1000; i++) {
+            this.Memory[i] = 0;
+        }
+        System.out.println("Memory Cleared");
     }
 
 }
