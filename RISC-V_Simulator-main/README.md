@@ -1,14 +1,32 @@
-memory array[4096] // 4kB of memory
 
-reg array[32]
+- Ongoing tasks:
 
-pc counter
+        memory 
+        print 
+        memory 
+        arithmetic 
+        Bitwise
 
-TODO:
-comprehend the input
-UML chart
+        input 
+        file 
+        non-arithmetic
+        
+- Continuous refinements:
 
-Functionalities:
+        comprehend the input
+        UML chart
+
+---
+
+- Architecture specifications:
+
+   - memory array[4096] {4kB of memory}
+   - reg array[32]
+   - pc counter
+
+---
+
+- Functionalities:
 
     - input & its analysis
     - ADD
