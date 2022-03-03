@@ -10,10 +10,11 @@ import java.util.Scanner;
 
 public class Input {
 
-    File code = new File("");
+    File code;
     Scanner input;
 
-    Input() throws FileNotFoundException {
+    Input(String path) throws FileNotFoundException {
+        code = new File(path);
         this.input = new Scanner(code);
     }
 
@@ -73,8 +74,8 @@ public class Input {
     // A method that converts input string which contains a target register to index
     // of that particualr register
     private int regToIndex(String reg) {
-        if((reg.charAt(0) == 't') || (reg.charAt(0) == 's') || (reg.charAt(0) == 'a') ){
-            switch(reg.charAt(0)){
+        if ((reg.charAt(0) == 't') || (reg.charAt(0) == 's') || (reg.charAt(0) == 'a')) {
+            switch (reg.charAt(0)) {
                 case 't':
                     return getIndexOfT(reg.charAt(1));
                 case 's':
@@ -84,12 +85,27 @@ public class Input {
                 default:
                     return -1;
             }
+        } else {
+            // Ideally will throw an error but currently let's deal it simple
+            return -1;
         }
-        return 0;
     }
 
     private int addressToIndex(String reg) {
-
+        String offset = "";
+        // reg will be of format offset(rs1) => I need value inside rs1 and offset
+        // Firstly lets catch up on offset
+        int i = 0, regIndex;
+        while (reg.charAt(i) != '(') {
+            offset += reg.charAt(i);
+            i++;
+        }
+        i++;
+        // Dealing with rs1 now
+        regIndex = regToIndex(reg.substring(i, reg.lastIndexOf(reg)));
+        // Now We need to fetch value from this register and add it to offset which will
+        // be returned
+        // return (Register[regIndex]+(int)offset);
         return 0;
     }
 
@@ -141,13 +157,11 @@ public class Input {
     }
 
     private void input_bne() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void input_jal() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from
-                                                                       // nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private void input_subi() {
@@ -201,7 +215,7 @@ public class Input {
     }
 
     private int getIndexOfT(char num) {
-        switch(num){
+        switch (num) {
             case '0':
                 return 5;
             case '1':
@@ -220,9 +234,9 @@ public class Input {
                 return -1;
         }
     }
-    
-    private int getIndexOfS(String reg){
-        switch(reg.charAt(0)){
+
+    private int getIndexOfS(String reg) {
+        switch (reg.charAt(0)) {
             case '0':
                 return 8;
             case '1':
@@ -248,9 +262,9 @@ public class Input {
                 return -1;
         }
     }
-    
-    private int getIndexOfA(char num){
-        switch(num){
+
+    private int getIndexOfA(char num) {
+        switch (num) {
             case '0':
                 return 10;
             case '1':
