@@ -8,13 +8,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class Input {
+public class Input extends Register {
 
     File code;
     Scanner input;
 
-    Input(String path) throws FileNotFoundException {
-        code = new File(path);
+    Input() throws FileNotFoundException {
+        code = new File(
+                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\RISCV_Sim\\src\\test.txt");
         this.input = new Scanner(code);
     }
 
@@ -143,6 +144,7 @@ public class Input {
         // Currently only accepts the standard way i.e li x0, 0
         dest = regToIndex(input.next());
         addr = input.nextInt();
+        li(dest, addr);
     }
 
     private void input_addi() {
@@ -153,6 +155,7 @@ public class Input {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         imm = input.nextInt();
+        addi(rd, rs1, imm);
         // Calling Addi operation of memory class
     }
 
