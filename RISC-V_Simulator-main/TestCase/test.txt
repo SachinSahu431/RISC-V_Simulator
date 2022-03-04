@@ -1,4 +1,10 @@
  # Just to test the code
-li t0, 1  # Loading 1 to t0
-li t1, 2
-addi t3, t0, 8
+li t0, 11  # Loading 1 to t0
+li t1, 111
+li t2, 222
+# li s0, 123
+# li a2, 123
+addi t3, t0, 86000
+li t4, 444
+li t5, 555
+li t6, 6666

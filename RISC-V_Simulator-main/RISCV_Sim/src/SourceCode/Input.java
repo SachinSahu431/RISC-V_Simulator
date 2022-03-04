@@ -15,7 +15,9 @@ public class Input extends Register {
 
     Input() throws FileNotFoundException {
         code = new File(
-                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
+                "D:\\SACHIN\\Sachin_Docs\\sem 4\\CO\\RISC project\\gh\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
+        // code = new File("D:\\Work\\NOTES\\Computer
+        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
         this.input = new Scanner(code);
     }
 
@@ -117,6 +119,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         rs2 = regToIndex(input.next());
+        add(rd, rs1, rs2);
         // Calling Add operation of memory class
     }
 
@@ -127,6 +130,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         rs2 = regToIndex(input.next());
+        sub(rd, rs1, rs2);
         // Calling Sub operation of memory class
     }
 
@@ -135,6 +139,7 @@ public class Input extends Register {
         // Currently only accepts the standard way i.e lw x1, 0(x2)
         dest = regToIndex(input.next());
         src = addressToIndex(input.next());
+        loadWord(dest, src);
         // Calling lw operation of memory class
     }
 
@@ -155,8 +160,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         imm = input.nextInt();
-        addi(rd, rs1, imm);
-        // Calling Addi operation of memory class
+        addi(rd, rs1, imm); // Calling Addi operation of memory class
     }
 
     private void input_bne() {
@@ -174,6 +178,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         immd = input.nextInt();
+        subi(rd, rs1, immd);
         // Calling Subi operation of memory class
     }
 
@@ -184,6 +189,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         rs2 = regToIndex(input.next());
+        mul(rd, rs1, rs2);
         // Calling Mul operation of memory class
     }
 
@@ -194,6 +200,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         rs2 = regToIndex(input.next());
+        mulh(rd, rs1, rs2);
         // Calling Mulh operation of memory class
     }
 
@@ -204,6 +211,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         rs2 = regToIndex(input.next());
+        div(rd, rs1, rs2);
         // Calling div operation of memory class
     }
 
@@ -214,6 +222,7 @@ public class Input extends Register {
         rd = regToIndex(input.next());
         rs1 = regToIndex(input.next());
         rs2 = regToIndex(input.next());
+        rem(rd, rs1, rs2);
         // Calling Rem operation of memory class
     }
 
