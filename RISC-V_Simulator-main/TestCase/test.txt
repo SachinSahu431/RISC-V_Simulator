@@ -2,8 +2,11 @@
 li t0, 11  # Loading 1 to t0
 li t1, 111
 li t2, 222
-# li s0, 123
-# li a2, 123
+li s0, 101 # s0 to s9 working
+li s2, 212 # todo: s10 & s11
+li s9, 999
+li a0, 9211 # a0 to a7 working
+li a7, 777
 addi t3, t0, 86000
 li t4, 444
 li t5, 555

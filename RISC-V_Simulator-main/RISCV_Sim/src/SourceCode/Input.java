@@ -14,10 +14,7 @@ public class Input extends Register {
     Scanner input;
 
     Input() throws FileNotFoundException {
-        code = new File(
-                "D:\\SACHIN\\Sachin_Docs\\sem 4\\CO\\RISC project\\gh\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
-        // code = new File("D:\\Work\\NOTES\\Computer
-        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
+        File code = new File("RISC-V_Simulator-main/TestCase/test.txt");
         this.input = new Scanner(code);
     }
 
@@ -82,9 +79,9 @@ public class Input extends Register {
                 case 't':
                     return getIndexOfT(reg.charAt(1));
                 case 's':
-                    return getIndexOfS(reg);
+                    return getIndexOfS(reg.charAt(1));
                 case 'a':
-                    return getIndexOfA(reg.charAt(0));
+                    return getIndexOfA(reg.charAt(1));
                 default:
                     return -1;
             }
@@ -247,12 +244,12 @@ public class Input extends Register {
         }
     }
 
-    private int getIndexOfS(String reg) {
-        switch (reg.charAt(0)) {
+    private int getIndexOfS(char reg) {
+        switch (reg) {
             case '0':
                 return 8;
             case '1':
-                // Register mapping to sppecific one
+                // Register mapping to specific one
                 return 9;
             case '2':
                 return 18;
