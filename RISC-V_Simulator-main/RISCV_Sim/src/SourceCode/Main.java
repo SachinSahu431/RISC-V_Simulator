@@ -1,5 +1,7 @@
 package SourceCode;
 
+import java.io.FileNotFoundException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -23,9 +25,13 @@ public class Main {
         // reg.loadWord(1, 80);
 
         // reg.printAll();
-        Input p = new Input();
-        p.TakeFileInputinMain();
-        p.printAll();
+        try {
+            Input p = new Input();
+            p.TakeFileInputinMain();
+            p.printAll();
+        } catch (FileNotFoundException e) {
+            System.out.println("Please Reconsider the path of the file");
+        }
     }
 
 }

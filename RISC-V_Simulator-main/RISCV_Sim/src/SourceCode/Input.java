@@ -15,7 +15,7 @@ public class Input extends Register {
 
     Input() throws FileNotFoundException {
         code = new File(
-                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\RISCV_Sim\\src\\test.txt");
+                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
         this.input = new Scanner(code);
     }
 

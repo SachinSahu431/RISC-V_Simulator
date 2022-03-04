@@ -1,0 +1,4 @@
+ # Just to test the code
+li t0, 1  # Loading 1 to t0
+li t1, 2
+addi t3, t0, 8
