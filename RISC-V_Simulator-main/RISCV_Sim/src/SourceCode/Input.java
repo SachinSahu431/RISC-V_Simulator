@@ -14,7 +14,7 @@ public class Input extends Register {
     Scanner input;
 
     Input() throws FileNotFoundException {
-        File code = new File("RISC-V_Simulator-main/TestCase/test.txt");
+        code = new File("RISC-V_Simulator-main/TestCase/test.txt");
         this.input = new Scanner(code);
     }
 
@@ -74,14 +74,17 @@ public class Input extends Register {
     // A method that converts input string which contains a target register to index
     // of that particualr register
     private int regToIndex(String reg) {
-        if ((reg.charAt(0) == 't') || (reg.charAt(0) == 's') || (reg.charAt(0) == 'a')) {
-            switch (reg.charAt(0)) {
+        char c0 = reg.charAt(0);
+        char c1 = reg.charAt(1);
+        char c2 = reg.charAt(2);
+        if ((c0 == 't') || (c0 == 's') || (c0 == 'a')) {
+            switch (c0) {
                 case 't':
-                    return getIndexOfT(reg.charAt(1));
+                    return getIndexOfT(c1);
                 case 's':
-                    return getIndexOfS(reg.charAt(1));
+                    return getIndexOfS(c1, c2);
                 case 'a':
-                    return getIndexOfA(reg.charAt(1));
+                    return getIndexOfA(c1);
                 default:
                     return -1;
             }
@@ -244,13 +247,17 @@ public class Input extends Register {
         }
     }
 
-    private int getIndexOfS(char reg) {
+    private int getIndexOfS(char reg, char reg2) {
         switch (reg) {
             case '0':
                 return 8;
-            case '1':
-                // Register mapping to specific one
-                return 9;
+            case '1': // Register mapping to specific one
+                if (reg2 == '0')
+                    return 26;
+                else if (reg2 == '1')
+                    return 27;
+                else
+                    return 9;
             case '2':
                 return 18;
             case '3':

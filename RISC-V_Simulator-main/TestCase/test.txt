@@ -1,10 +1,13 @@
  # Just to test the code
-li t0, 11  # Loading 1 to t0
+li t0, 11  # Loading 11 into t0
 li t1, 111
 li t2, 222
 li s0, 101 # s0 to s9 working
-li s2, 212 # todo: s10 & s11
+li s1, 202
+li s2, 212 
 li s9, 999
+li s10, 1010    # s10 & s11 are working!
+li s11, 1100
 li a0, 9211 # a0 to a7 working
 li a7, 777
 addi t3, t0, 86000
