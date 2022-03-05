@@ -12,6 +12,7 @@ public class Input extends Register {
 
     File code;
     Scanner input;
+    int pc = 0;
 
     Input() throws FileNotFoundException {
         code = new File("RISC-V_Simulator-main/TestCase/test.txt");
@@ -22,51 +23,75 @@ public class Input extends Register {
     // do the task
     void TakeFileInputinMain() {
 
+        pc = 1;
+        /*
+         * PC increases by 1 after each instruction.
+         * Continuous labels without any instruction in between them will not increase
+         * PC
+         */
+
         // For a paticular set of instructions it shall run efficiently
         while (input.hasNextLine()) {
-            switch (input.next()) {
+            String z = input.next();
+            if (z.indexOf(":") != -1) {
+                System.out.println("Label found at PC = " + pc);
+                System.out.println(z.substring(0, z.indexOf(":")).trim());
+            }
+            switch (z) {
                 case "add":
                     input_Add();
+                    pc++;
                     break;
                 case "sub":
                     input_Sub();
+                    pc++;
                     break;
                 case "lw":
                     input_lw();
+                    pc++;
                     break;
                 case "li":
                     input_li();
+                    pc++;
                     break;
                 case "addi":
                     input_addi();
+                    pc++;
                     break;
                 case "subi":
                     input_subi();
+                    pc++;
                     break;
                 case "mul":
                     input_mul();
+                    pc++;
                     break;
                 case "mulh":
                     input_mulh();
+                    pc++;
                     break;
                 case "div":
                     input_div();
+                    pc++;
                     break;
                 case "rem":
                     input_rem();
+                    pc++;
                     break;
                 case "bne":
                     input_bne();
+                    pc++;
                     break;
                 case "jal":
                     input_jal();
+                    pc++;
                     break;
                 case "#":
                     input.nextLine();
+                    // pc++;
                     break;
                 default:
                     break;
-
             }
         }
     }
