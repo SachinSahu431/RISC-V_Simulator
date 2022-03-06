@@ -1,0 +1,32 @@
+.data
+    .word 10, 20, -32, 0, 23, 2
+
+.text
+.globl main
+
+main:
+
+li t0, 6 
+li s0, 0 
+la t3, array 
+
+MainLoop:
+
+    beq s0, t0, exit    
+    li s1, 0    
+
+    InnerLoop:
+        beq s1, t0, exitInnerLoop 
+        lw a0, 0(t3)    
+        lw a1, 4(t3)    
+        ble a0, a1, continue    
+                                
+        sw a1, 0(t3)    
+        sw a0, 4(t3)    
+    continue:
+        addi s1, s1, 1  
+        addi t3, t3, 4  
+        j InnerLoop
+    exitInnerLoop:
+        addi s0, s0, 1 
+        j MainLoop

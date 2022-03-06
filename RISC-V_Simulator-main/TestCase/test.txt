@@ -17,7 +17,7 @@ LABEL2:
     li a0, 9211 
     # a0 to a7 working
     li a7, 777
-    addi t3, t0, 86000
+    addi t3, t0, 8600
 LABEL3:     
     li t4, 444
     li t5, 555
