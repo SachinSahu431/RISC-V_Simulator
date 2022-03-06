@@ -7,18 +7,30 @@ package SourceCode;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Input extends Register {
 
     File code;
     Scanner input;
     int pc = 0;
+    Vector<Labels> label = new Vector<Labels>();
 
     Input() throws FileNotFoundException {
-        code = new File("RISC-V_Simulator-main/TestCase/test.txt");
+        code = new File(
+                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
         this.input = new Scanner(code);
     }
-
+    
+    boolean checkLabel(String z){
+        if (z.indexOf(":") != -1) {
+            System.out.println("Label found at PC = " + pc);    
+            System.out.println(z.substring(0, z.indexOf(":")).trim());
+            label.add(new Labels(pc,z.substring(0, z.indexOf(":")).trim()));
+            return true;
+        }
+        return false;
+    }
     // A function used to take input of the program and call for other functions to
     // do the task
     void TakeFileInputinMain() {
@@ -33,65 +45,66 @@ public class Input extends Register {
         // For a paticular set of instructions it shall run efficiently
         while (input.hasNextLine()) {
             String z = input.next();
-            if (z.indexOf(":") != -1) {
-                System.out.println("Label found at PC = " + pc);
-                System.out.println(z.substring(0, z.indexOf(":")).trim());
-            }
-            switch (z) {
-                case "add":
-                    input_Add();
-                    pc++;
-                    break;
-                case "sub":
-                    input_Sub();
-                    pc++;
-                    break;
-                case "lw":
-                    input_lw();
-                    pc++;
-                    break;
-                case "li":
-                    input_li();
-                    pc++;
-                    break;
-                case "addi":
-                    input_addi();
-                    pc++;
-                    break;
-                case "subi":
-                    input_subi();
-                    pc++;
-                    break;
-                case "mul":
-                    input_mul();
-                    pc++;
-                    break;
-                case "mulh":
-                    input_mulh();
-                    pc++;
-                    break;
-                case "div":
-                    input_div();
-                    pc++;
-                    break;
-                case "rem":
-                    input_rem();
-                    pc++;
-                    break;
-                case "bne":
-                    input_bne();
-                    pc++;
-                    break;
-                case "jal":
-                    input_jal();
-                    pc++;
-                    break;
-                case "#":
-                    input.nextLine();
-                    // pc++;
-                    break;
-                default:
-                    break;
+            if(checkLabel(z)){
+                InputLabels();
+            } 
+            else{
+                switch (z) {
+                    case "add":
+                        input_Add();
+                        pc++;
+                        break;
+                    case "sub":
+                        input_Sub();
+                        pc++;
+                        break;
+                    case "lw":
+                        input_lw();
+                        pc++;
+                        break;
+                    case "li":
+                        input_li();
+                        pc++;
+                        break;
+                    case "addi":
+                        input_addi();
+                        pc++;
+                        break;
+                    case "subi":
+                        input_subi();
+                        pc++;
+                        break;
+                    case "mul":
+                        input_mul();
+                        pc++;
+                        break;
+                    case "mulh":
+                        input_mulh();
+                        pc++;
+                        break;
+                    case "div":
+                        input_div();
+                        pc++;
+                        break;
+                    case "rem":
+                        input_rem();
+                        pc++;
+                        break;
+                    case "bne":
+                        input_bne();
+                        pc++;
+                        break;
+                    case "jal":
+                        input_jal();
+                        pc++;
+                        break;
+                    case "#":
+                        input.nextLine();
+                        // pc++;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -189,7 +202,15 @@ public class Input extends Register {
     }
 
     private void input_bne() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //throw new UnsupportedOperationException("Not supported yet.");
+        int rs2,rs1,jumpto = -1;
+        rs1 = regToIndex(input.next());
+        rs2 = regToIndex(input.next());
+        String lb = input.next();
+        for(int i=0;i<label.size();i++){
+            if(lb == label.get(i).getId())
+                jumpto = label.get(i).getLine();
+        }
     }
 
     private void input_jal() {
@@ -324,6 +345,18 @@ public class Input extends Register {
                 return 17;
             default:
                 return -1;
+        }
+    }
+
+    private void InputLabels() {
+        
+        while(input.hasNextLine()){
+            if(checkLabel(input.next())){
+                continue;
+            }else{
+                input.nextLine();
+                pc++;
+            }
         }
     }
 }

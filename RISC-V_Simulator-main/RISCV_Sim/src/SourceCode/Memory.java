@@ -22,8 +22,12 @@ public class Memory {
         Memory[memIndex] = Register[regIndex];
     }
 
-    void branchNotEqual() {
-
+    boolean branchNotEqual(int reg1, int reg2) {
+        if(Register[reg1] != Register[reg2]){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     void jumpAndLink() {
