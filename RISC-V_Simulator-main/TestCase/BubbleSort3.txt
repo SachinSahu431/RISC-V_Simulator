@@ -13,7 +13,7 @@ la t3, array
 MainLoop:
 
     beq s0, t0, exit    
-    li s1, 0    
+    li s1, 6    
 
     InnerLoop:
         beq s1, t0, exitInnerLoop 

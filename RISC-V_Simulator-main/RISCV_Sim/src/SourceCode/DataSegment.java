@@ -8,10 +8,12 @@ public class DataSegment {
     private String id; // Type of the data structure
     private String valueString;
     Vector<Integer> valueInt = new Vector<>();
+    int stored_Address;
 
     DataSegment(String id) {
         this.id = id;
         this.valueString = "";
+        this.stored_Address = 0;
     }
 
     String getId() {
@@ -55,11 +57,12 @@ public class DataSegment {
     private void setWords(String s) {
         try {
             // We presume all words are present in the string
-            s = s.replaceAll("\\s","");
-            s = s+",";
-            String[] A = s.split("[,]",0);
-            for(int i=0;i<A.length;i++)
+            s = s.replaceAll("\\s", "");
+            s = s + ",";
+            String[] A = s.split("[,]", 0);
+            for (int i = 0; i < A.length; i++)
                 this.valueInt.add(Integer.parseInt(A[i]));
+            System.out.println(this.valueInt);
         } catch (Exception e) {
             throw new UnsupportedOperationException("Not supported yet.");
         }

@@ -14,6 +14,9 @@ public class Memory {
     }
 
     // Non-Arithmetic Operations
+    // void loadWord(int regIndex, int val) {
+    // this.Register[regIndex] = val;
+    // }
     void loadWord(int regIndex, int memIndex) {
         this.Register[regIndex] = Memory[memIndex];
     }
@@ -23,9 +26,17 @@ public class Memory {
     }
 
     boolean branchNotEqual(int reg1, int reg2) {
-        if(Register[reg1] != Register[reg2]){
+        if (Register[reg1] != Register[reg2]) {
             return true;
-        }else{
+        } else {
+            return false;
+        }
+    }
+
+    boolean branchEqualTo(int reg1, int reg2) {
+        if (Register[reg1] == Register[reg2]) {
+            return true;
+        } else {
             return false;
         }
     }

@@ -20,8 +20,11 @@ public class Input extends Register {
 
     Input() throws FileNotFoundException {
         code = new File(
-                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
-        // "RISC-V_Simulator-main/TestCase/loop.txt");
+                // "D:\\Work\\NOTES\\Computer
+                // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
+                // "RISC-V_Simulator-main/TestCase/loop2.txt");
+                "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
+        // "RISC-V_Simulator-main/TestCase/BubbleSort2.txt");
         this.input = new Scanner(code);
     }
 
@@ -37,41 +40,60 @@ public class Input extends Register {
 
     // A function used to take input of the program and call for other functions to
     // do the task
+    DataSegment data = new DataSegment(null);
+
     void TakeFileInputinMain() throws FileNotFoundException {
 
         InputLabels();
         pc = 1;
+        System.out.println("chaliye shuru karte h");
         /*
          * PC increases by 1 after each instruction.
          * Continuous labels without any instruction in between them will not increase
          * PC
          */
-        //Assume 1st Line is .data and succeeding is the list of assemblers corresponding corresponding it
-        /*input.nextLine();
-        DataSegment data = new DataSegment(input.next());
-        data.workOnId(input.nextLine());*/
+        // Assume 1st Line is .data and succeeding is the list of assemblers
+        // corresponding corresponding it
+
+        String s = input.nextLine();
+        System.out.println("shuru hogaya");
+        data = new DataSegment(input.next());
+        data.workOnId(input.nextLine());
+        for (int i = 0; i < data.valueInt.size(); i++)
+            Memory[i] = data.valueInt.get(i);
+        input.nextLine();
+        // System.out.println(data.getWord(0));
+
         // For a paticular set of instructions it shall run efficiently
         while (input.hasNextLine()) {
             String z = input.next();
             z = z.replaceAll("\\s", "");
             String p;
-            p=input.nextLine();
+            p = input.nextLine();
             p = p.replaceAll("\\s", "");
-            p=p+",";
-//            System.out.println(z+":"+p);
-            String[] inst = p.split("[,]",0);
-//            System.out.println(Arrays.asList(inst));
+            p = p + ",";
+            // System.out.println(z+":"+p);
+            String[] inst = p.split("[,]", 0);
+            System.out.println(Arrays.asList(inst));
             switch (z) {
                 case "add":
                     add(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
                     pc++;
                     break;
                 case "sub":
-                    sub(regToIndex(inst[0]),regToIndex(inst[1]) ,regToIndex(inst[2]) );
+                    sub(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
                     pc++;
                     break;
                 case "lw":
-                    loadWord(regToIndex(inst[0]),addressToIndex(inst[0]));
+                    System.out.println("lw " + inst[0] + " " + inst[1]);
+                    // loadWord(regToIndex(inst[0]), addressToIndex(inst[1]));
+                    loadWord(regToIndex(inst[0]), addressToIndex(inst[1]));
+                    pc++;
+                    break;
+                case "sw":
+                    System.out.println("sw " + inst[0] + " " + inst[1]);
+                    // loadWord(regToIndex(inst[0]), addressToIndex(inst[1]));
+                    storeWord(regToIndex(inst[0]), addressToIndex(inst[1]));
                     pc++;
                     break;
                 case "li":
@@ -79,7 +101,7 @@ public class Input extends Register {
                     pc++;
                     break;
                 case "addi":
-                    addi(regToIndex(inst[0]), regToIndex(inst[1]),Integer.parseInt(inst[2]));
+                    addi(regToIndex(inst[0]), regToIndex(inst[1]), Integer.parseInt(inst[2]));
                     pc++;
                     break;
                 case "subi":
@@ -87,29 +109,33 @@ public class Input extends Register {
                     pc++;
                     break;
                 case "mul":
-                    mul(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
+                    mul(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
                     pc++;
                     break;
                 case "mulh":
-                    mulh(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
+                    mulh(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
                     pc++;
                     break;
                 case "div":
-                    div(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
+                    div(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
                     pc++;
                     break;
                 case "rem":
-                    rem(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
+                    rem(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
                     pc++;
                     break;
                 case "bne":
-                    input_bne(regToIndex(inst[0]),regToIndex(inst[1]),inst[2]); 
+                    input_bne(regToIndex(inst[0]), regToIndex(inst[1]), inst[2]);
+                    pc++;
+                    break;
+                case "beq":
+                    input_beq(regToIndex(inst[0]), regToIndex(inst[1]), inst[2]);
                     pc++;
                     break;
                 case "jal":
                     input_jal(inst[0]);
                     pc++;
-                    printAll();
+                    // printAll();
                     break;
                 case "#":
                     // pc++;
@@ -148,34 +174,50 @@ public class Input extends Register {
     }
 
     private int addressToIndex(String reg) {
-        String offset = "";
-        // reg will be of format offset(rs1) => I need value inside rs1 and offset
-        // Firstly lets catch up on offset
-        int i = 0, regIndex;
-        while (reg.charAt(i) != '(') {
-            offset += reg.charAt(i);
-            i++;
-        }
-        i++;
-        // Dealing with rs1 now
-        regIndex = regToIndex(reg.substring(i, reg.lastIndexOf(reg)));
+        // reg will be of format offset(rs1)
+        String tempOffset = reg.split("\\(")[0];
+        int offset = Integer.parseInt(tempOffset);
+        String rs = reg.substring(reg.indexOf("(") + 1, reg.indexOf(")"));
+        System.out.println("offset = " + offset);
+        System.out.println("rs = " + rs);
+        // rs1 is a register which stores the address of the array
+        int regIndex = regToIndex(rs);
         // Now We need to fetch value from this register and add it to offset which will
         // be returned
-        // return (Register[regIndex]+(int)offset);
-        return 0;
+        System.out.println("regIndex = " + regIndex);
+        System.out.println("data.getWord = " + data.getWord(offset / 4));
+        System.out.println("memory wala  " + Memory[offset / 4]);
+        // return (Register[regIndex] + (int) offset);
+        // return 0;
+        return (offset / 4);
     }
 
-    private void input_bne(int rs1, int rs2, String lb) {
-         throw new UnsupportedOperationException("Not supported yet.");
-        /*int jumpto = -1;
+    private void input_bne(int rs1, int rs2, String lb) throws FileNotFoundException {
+        // throw new UnsupportedOperationException("Not supported yet.");
+        int jumpto = -1;
         for (int i = 0; i < label.size(); i++) {
             if (lb == label.get(i).getId())
                 jumpto = label.get(i).getLine();
-        }*/
+        }
+        if (jumpto != -1) {
+            input_jal(lb);
+        }
+    }
+
+    private void input_beq(int rs1, int rs2, String lb) throws FileNotFoundException {
+        // throw new UnsupportedOperationException("Not supported yet.");
+        int jumpto = -1;
+        for (int i = 0; i < label.size(); i++) {
+            if (lb == label.get(i).getId())
+                jumpto = label.get(i).getLine();
+        }
+        if (jumpto != -1) {
+            input_jal(lb);
+        }
     }
 
     private void input_jal(String Label_Name) throws FileNotFoundException {
-//         throw new UnsupportedOperationException("Not supported yet.");
+        // throw new UnsupportedOperationException("Not supported yet.");
         int index = -1;
         for (int i = 0; i < label.size(); i++) {
             // System.out.println(label.get(i).getId()+" ? "+Label_Name);
@@ -188,11 +230,11 @@ public class Input extends Register {
             throw new UnsupportedOperationException("Label " + Label_Name + " Not found. ");
         }
         Scanner temp = new Scanner(code);
-        while(temp.hasNextLine()){
+        while (temp.hasNextLine()) {
             String p = temp.next();
-            if(p.indexOf(":") != -1 && p.contains(label.get(index).getId())){
+            if (p.indexOf(":") != -1 && p.contains(label.get(index).getId())) {
                 break;
-            }else{
+            } else {
                 temp.nextLine();
             }
         }
@@ -204,10 +246,13 @@ public class Input extends Register {
                     add(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
                     break;
                 case "sub":
-                    sub(regToIndex(temp.next()),regToIndex(temp.next()) ,regToIndex(temp.next()) );
+                    sub(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
                     break;
                 case "lw":
-                    loadWord(regToIndex(temp.next()),addressToIndex(temp.next()));
+                    loadWord(regToIndex(temp.next()), addressToIndex(temp.next()));
+                    break;
+                case "sw":
+                    storeWord(regToIndex(temp.next()), addressToIndex(temp.next()));
                     break;
                 case "li":
                     li(regToIndex(temp.next()), temp.nextInt());
@@ -219,23 +264,26 @@ public class Input extends Register {
                     subi(regToIndex(temp.next()), regToIndex(temp.next()), temp.nextInt());
                     break;
                 case "mul":
-                    mul(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    mul(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
                     break;
                 case "mulh":
-                    mulh(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    mulh(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
                     break;
                 case "div":
-                    div(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    div(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
                     break;
                 case "rem":
-                    rem(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    rem(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
                     break;
                 case "bne":
-                    input_bne(regToIndex(temp.next()),regToIndex(temp.next()),temp.next()); //Solve it?
+                    input_bne(regToIndex(temp.next()), regToIndex(temp.next()), temp.next()); // Solve it?
+                    break;
+                case "beq":
+                    input_beq(regToIndex(temp.next()), regToIndex(temp.next()), temp.next()); // Solve it?
                     break;
                 case "jal":
-                    input_jal(temp.next()); //?
-//                    printAll(); Check
+                    input_jal(temp.next()); // ?
+                    // printAll(); Check
                     break;
                 case "#":
                     temp.nextLine();
@@ -247,7 +295,7 @@ public class Input extends Register {
         }
         temp.close();
     }
-    
+
     private int getIndexOfT(char num) {
         switch (num) {
             case '0':
@@ -332,10 +380,10 @@ public class Input extends Register {
             if (checkLabel(z, temp_PC)) {
                 continue;
             } else {
-                if(z.length()>0){
+                if (z.length() > 0) {
                     if (z.charAt(0) != '#') {
-                    temp_PC++;
-                }
+                        temp_PC++;
+                    }
                 }
             }
         }
