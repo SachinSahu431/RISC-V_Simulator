@@ -54,19 +54,12 @@ public class DataSegment {
 
     private void setWords(String s) {
         try {
-            // We presume words as well will be in proper order like 245, 3, 4, 5
-            s += '\0';
-            String p = "";
-            for (int i = 0; s.charAt(i) != '\0'; i++) {
-                if (s.charAt(i) == ',') {
-                    valueInt.add(Integer.parseInt(p));
-                    p = "";
-                    i++;
-                } else {
-                    p = p + s.charAt(i);
-                }
-            }
-
+            // We presume all words are present in the string
+            s = s.replaceAll("\\s","");
+            s = s+",";
+            String[] A = s.split("[,]",0);
+            for(int i=0;i<A.length;i++)
+                this.valueInt.add(Integer.parseInt(A[i]));
         } catch (Exception e) {
             throw new UnsupportedOperationException("Not supported yet.");
         }

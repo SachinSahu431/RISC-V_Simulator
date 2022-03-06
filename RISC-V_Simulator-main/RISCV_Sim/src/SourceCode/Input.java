@@ -6,6 +6,7 @@ package SourceCode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -45,62 +46,72 @@ public class Input extends Register {
          * Continuous labels without any instruction in between them will not increase
          * PC
          */
+        //Assume 1st Line is .data and succeeding is the list of assemblers corresponding corresponding it
+        /*input.nextLine();
+        DataSegment data = new DataSegment(input.next());
+        data.workOnId(input.nextLine());*/
         // For a paticular set of instructions it shall run efficiently
         while (input.hasNextLine()) {
             String z = input.next();
-            // System.out.println(z);
+            z = z.replaceAll("\\s", "");
+            String p;
+            p=input.nextLine();
+            p = p.replaceAll("\\s", "");
+            p=p+",";
+//            System.out.println(z+":"+p);
+            String[] inst = p.split("[,]",0);
+//            System.out.println(Arrays.asList(inst));
             switch (z) {
                 case "add":
-                    add(regToIndex(input.next()), regToIndex(input.next()), regToIndex(input.next()));
+                    add(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
                     pc++;
                     break;
                 case "sub":
-                    sub(regToIndex(input.next()),regToIndex(input.next()) ,regToIndex(input.next()) );
+                    sub(regToIndex(inst[0]),regToIndex(inst[1]) ,regToIndex(inst[2]) );
                     pc++;
                     break;
                 case "lw":
-                    loadWord(regToIndex(input.next()),addressToIndex(input.next()));
+                    loadWord(regToIndex(inst[0]),addressToIndex(inst[0]));
                     pc++;
                     break;
                 case "li":
-                    li(regToIndex(input.next()), input.nextInt());
+                    li(regToIndex(inst[0]), Integer.parseInt(inst[1]));
                     pc++;
                     break;
                 case "addi":
-                    addi(regToIndex(input.next()), regToIndex(input.next()), input.nextInt());
+                    addi(regToIndex(inst[0]), regToIndex(inst[1]),Integer.parseInt(inst[2]));
                     pc++;
                     break;
                 case "subi":
-                    subi(regToIndex(input.next()), regToIndex(input.next()), input.nextInt());
+                    subi(regToIndex(inst[0]), regToIndex(inst[1]), Integer.parseInt(inst[2]));
                     pc++;
                     break;
                 case "mul":
-                    mul(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
+                    mul(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
                     pc++;
                     break;
                 case "mulh":
-                    mulh(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
+                    mulh(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
                     pc++;
                     break;
                 case "div":
-                    div(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
+                    div(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
                     pc++;
                     break;
                 case "rem":
-                    rem(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
+                    rem(regToIndex(inst[0]),regToIndex(inst[1]),regToIndex(inst[2]));
                     pc++;
                     break;
                 case "bne":
-                    input_bne(regToIndex(input.next()),regToIndex(input.next()),input.next()); //Solve it?
+                    input_bne(regToIndex(inst[0]),regToIndex(inst[1]),inst[2]); 
                     pc++;
                     break;
                 case "jal":
-                    input_jal(input.next());
+                    input_jal(inst[0]);
                     pc++;
                     printAll();
                     break;
                 case "#":
-                    input.nextLine();
                     // pc++;
                     break;
                 default:
@@ -321,8 +332,10 @@ public class Input extends Register {
             if (checkLabel(z, temp_PC)) {
                 continue;
             } else {
-                if (z.charAt(0) != '#') {
+                if(z.length()>0){
+                    if (z.charAt(0) != '#') {
                     temp_PC++;
+                }
                 }
             }
         }
