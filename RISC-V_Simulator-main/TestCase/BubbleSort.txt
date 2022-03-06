@@ -2,10 +2,13 @@
     .word 10, 20, -32, 0, 23, 2
 
 .text
+.globl main
 
-li t0, 6 #Size of the array
-li s0, 0 #Starting index of the words (i=0)
-la t3, array # (array pointer) TODO: CHANGE THIS
+main:
+
+li t0, 6 # Size of the array
+li s0, 0 # Starting index of the words (i=0)
+la t3, array # (array pointer) TODO CHANGE THIS
 
 MainLoop:
 
