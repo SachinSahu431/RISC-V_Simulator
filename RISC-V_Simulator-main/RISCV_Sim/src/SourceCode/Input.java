@@ -95,9 +95,9 @@ public class Input extends Register {
                     pc++;
                     break;
                 case "jal":
-                    input_jal(input.next()); //?
+                    input_jal(input.next());
                     pc++;
-//                    printAll(); Check
+                    printAll();
                     break;
                 case "#":
                     input.nextLine();
@@ -164,8 +164,8 @@ public class Input extends Register {
     }
 
     private void input_jal(String Label_Name) throws FileNotFoundException {
-         throw new UnsupportedOperationException("Not supported yet.");
-       /* int index = -1;
+//         throw new UnsupportedOperationException("Not supported yet.");
+        int index = -1;
         for (int i = 0; i < label.size(); i++) {
             // System.out.println(label.get(i).getId()+" ? "+Label_Name);
             if (label.get(i).getId().equals(Label_Name)) {
@@ -177,91 +177,64 @@ public class Input extends Register {
             throw new UnsupportedOperationException("Label " + Label_Name + " Not found. ");
         }
         Scanner temp = new Scanner(code);
-        int temp_pc = -index;
-        while (temp.hasNextLine()) {
-            String p = temp.nextLine();
-            p = p.strip();
-            System.out.println(p);
-            if (p.charAt(0) == '#' || p.charAt(1) == '#') {
-                continue;
-            }
-            if (temp_pc < label.get(index).getLine()) {
-                temp_pc++;
-            } else {
-                System.out.println("In Jal :" + p + "");
-                if (p.length() >= 3) {
-                    switch (p.substring(0, 3)) {
-                        case "add":
-                            add(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                            temp_pc++;
-                            break;
-                        case "sub":
-                            sub(regToIndex(temp.next()),regToIndex(temp.next()) ,regToIndex(temp.next()) );
-                            temp_pc++;
-                            break;
-
-                        case "mul":
-                            input_mul();
-                            temp_pc++;
-                            break;
-
-                        case "div":
-                            input_div();
-                            temp_pc++;
-                            break;
-                        case "rem":
-                            input_rem();
-                            temp_pc++;
-                            break;
-                        case "#  ":
-                            temp.nextLine();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                if (p.length() >= 2) {
-                    switch (p.substring(0, 2)) {
-                        case "lw":
-                            input_lw();
-                            temp_pc++;
-                            break;
-                        case "li":
-                            System.out.println(regToIndex(p.substring(3, 5)) + " "
-                                    + Integer.parseInt(p.substring(7, p.length() - 1)));
-                            li(regToIndex(p.substring(3, 5)), Integer.parseInt(p.substring(7, p.length() - 1)));
-                            temp_pc++;
-                            break;
-                        case "# ":
-                            temp.nextLine();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                if (p.length() >= 4) {
-                    switch (p.substring(0, 4)) {
-                        case "addi":
-                            addi(regToIndex(p.substring(5, 7)), regToIndex(p.substring(9, 11)),
-                                    Integer.parseInt(p.substring(13)));
-                            temp_pc++;
-                            break;
-                        case "mulh":
-                            input_mulh();
-                            temp_pc++;
-                            break;
-                        case "subi":
-                            input_subi();
-                            temp_pc++;
-                            break;
-                        default:
-                            break;
-                    }
-                }
+        while(temp.hasNextLine()){
+            String p = temp.next();
+            if(p.indexOf(":") != -1 && p.contains(label.get(index).getId())){
+                break;
+            }else{
+                temp.nextLine();
             }
         }
-        temp.close();*/
+        while (temp.hasNextLine()) {
+            String z = temp.next();
+            // System.out.println(z);
+            switch (z) {
+                case "add":
+                    add(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
+                    break;
+                case "sub":
+                    sub(regToIndex(temp.next()),regToIndex(temp.next()) ,regToIndex(temp.next()) );
+                    break;
+                case "lw":
+                    loadWord(regToIndex(temp.next()),addressToIndex(temp.next()));
+                    break;
+                case "li":
+                    li(regToIndex(temp.next()), temp.nextInt());
+                    break;
+                case "addi":
+                    addi(regToIndex(temp.next()), regToIndex(temp.next()), temp.nextInt());
+                    break;
+                case "subi":
+                    subi(regToIndex(temp.next()), regToIndex(temp.next()), temp.nextInt());
+                    break;
+                case "mul":
+                    mul(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "mulh":
+                    mulh(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "div":
+                    div(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "rem":
+                    rem(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "bne":
+                    input_bne(regToIndex(temp.next()),regToIndex(temp.next()),temp.next()); //Solve it?
+                    break;
+                case "jal":
+                    input_jal(temp.next()); //?
+//                    printAll(); Check
+                    break;
+                case "#":
+                    temp.nextLine();
+                    // pc++;
+                    break;
+                default:
+                    break;
+            }
+        }
+        temp.close();
     }
     
     private int getIndexOfT(char num) {
