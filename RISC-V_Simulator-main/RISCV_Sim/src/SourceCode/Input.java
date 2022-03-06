@@ -55,43 +55,43 @@ public class Input extends Register {
                     pc++;
                     break;
                 case "sub":
-                    input_Sub();
+                    sub(regToIndex(input.next()),regToIndex(input.next()) ,regToIndex(input.next()) );
                     pc++;
                     break;
                 case "lw":
-                    input_lw();
+                    loadWord(regToIndex(input.next()),addressToIndex(input.next()));
                     pc++;
                     break;
                 case "li":
-                    input_li();
+                    li(regToIndex(input.next()), input.nextInt());
                     pc++;
                     break;
                 case "addi":
-                    input_addi();
+                    addi(regToIndex(input.next()), regToIndex(input.next()), input.nextInt());
                     pc++;
                     break;
                 case "subi":
-                    input_subi();
+                    subi(regToIndex(input.next()), regToIndex(input.next()), input.nextInt());
                     pc++;
                     break;
                 case "mul":
-                    input_mul();
+                    mul(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
                     pc++;
                     break;
                 case "mulh":
-                    input_mulh();
+                    mulh(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
                     pc++;
                     break;
                 case "div":
-                    input_div();
+                    div(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
                     pc++;
                     break;
                 case "rem":
-                    input_rem();
+                    rem(regToIndex(input.next()),regToIndex(input.next()),regToIndex(input.next()));
                     pc++;
                     break;
                 case "bne":
-                    input_bne();
+                    input_bne(regToIndex(input.next()),regToIndex(input.next()),input.next()); //Solve it?
                     pc++;
                     break;
                 case "jal":
@@ -154,60 +154,17 @@ public class Input extends Register {
         return 0;
     }
 
-    private void input_Sub() {
-        int rd, rs1, rs2;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e sub rd, rs1, rs2
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        rs2 = regToIndex(input.next());
-        sub(rd, rs1, rs2);
-        // Calling Sub operation of memory class
-    }
-
-    private void input_lw() {
-        int dest, src;
-        // Currently only accepts the standard way i.e lw x1, 0(x2)
-        dest = regToIndex(input.next());
-        src = addressToIndex(input.next());
-        loadWord(dest, src);
-        // Calling lw operation of memory class
-    }
-
-    private void input_li() {
-        int dest, addr;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e li x0, 0
-        dest = regToIndex(input.next());
-        addr = input.nextInt();
-        li(dest, addr);
-    }
-
-    private void input_addi() {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int rd, rs1, imm;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e add rd, rs1, 5
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        imm = input.nextInt();
-        addi(rd, rs1, imm); // Calling Addi operation of memory class
-    }
-
-    private void input_bne() {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int rs2, rs1, jumpto = -1;
-        rs1 = regToIndex(input.next());
-        rs2 = regToIndex(input.next());
-        String lb = input.next();
+    private void input_bne(int rs1, int rs2, String lb) {
+         throw new UnsupportedOperationException("Not supported yet.");
+        /*int jumpto = -1;
         for (int i = 0; i < label.size(); i++) {
             if (lb == label.get(i).getId())
                 jumpto = label.get(i).getLine();
-        }
+        }*/
     }
 
     private void input_jal(String Label_Name) throws FileNotFoundException {
-        // throw new UnsupportedOperationException("Not supported yet.");
+//         throw new UnsupportedOperationException("Not supported yet.");
         int index = -1;
         for (int i = 0; i < label.size(); i++) {
             // System.out.println(label.get(i).getId()+" ? "+Label_Name);
@@ -220,148 +177,66 @@ public class Input extends Register {
             throw new UnsupportedOperationException("Label " + Label_Name + " Not found. ");
         }
         Scanner temp = new Scanner(code);
-        int temp_pc = -index;
-        while (temp.hasNextLine()) {
-            String p = temp.nextLine();
-            p = p.strip();
-            System.out.println(p);
-            if (p.charAt(0) == '#' || p.charAt(1) == '#') {
-                continue;
+        while(temp.hasNextLine()){
+            String p = temp.next();
+            if(p.indexOf(":") != -1 && p.contains(label.get(index).getId())){
+                break;
+            }else{
+                temp.nextLine();
             }
-            if (temp_pc < label.get(index).getLine()) {
-                temp_pc++;
-            } else {
-                System.out.println("In Jal :" + p + "");
-                if (p.length() >= 3) {
-                    switch (p.substring(0, 3)) {
-                        case "add":
-                            add(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                            temp_pc++;
-                            break;
-                        case "sub":
-                            input_Sub();
-                            temp_pc++;
-                            break;
-
-                        case "mul":
-                            input_mul();
-                            temp_pc++;
-                            break;
-
-                        case "div":
-                            input_div();
-                            temp_pc++;
-                            break;
-                        case "rem":
-                            input_rem();
-                            temp_pc++;
-                            break;
-                        case "#  ":
-                            temp.nextLine();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                if (p.length() >= 2) {
-                    switch (p.substring(0, 2)) {
-                        case "lw":
-                            input_lw();
-                            temp_pc++;
-                            break;
-                        case "li":
-                            System.out.println(regToIndex(p.substring(3, 5)) + " "
-                                    + Integer.parseInt(p.substring(7, p.length() - 1)));
-                            li(regToIndex(p.substring(3, 5)), Integer.parseInt(p.substring(7, p.length() - 1)));
-                            temp_pc++;
-                            break;
-                        case "# ":
-                            temp.nextLine();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                if (p.length() >= 4) {
-                    switch (p.substring(0, 4)) {
-                        case "addi":
-                            addi(regToIndex(p.substring(5, 7)), regToIndex(p.substring(9, 11)),
-                                    Integer.parseInt(p.substring(13)));
-                            temp_pc++;
-                            break;
-                        case "mulh":
-                            input_mulh();
-                            temp_pc++;
-                            break;
-                        case "subi":
-                            input_subi();
-                            temp_pc++;
-                            break;
-                        default:
-                            break;
-                    }
-                }
+        }
+        while (temp.hasNextLine()) {
+            String z = temp.next();
+            // System.out.println(z);
+            switch (z) {
+                case "add":
+                    add(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
+                    break;
+                case "sub":
+                    sub(regToIndex(temp.next()),regToIndex(temp.next()) ,regToIndex(temp.next()) );
+                    break;
+                case "lw":
+                    loadWord(regToIndex(temp.next()),addressToIndex(temp.next()));
+                    break;
+                case "li":
+                    li(regToIndex(temp.next()), temp.nextInt());
+                    break;
+                case "addi":
+                    addi(regToIndex(temp.next()), regToIndex(temp.next()), temp.nextInt());
+                    break;
+                case "subi":
+                    subi(regToIndex(temp.next()), regToIndex(temp.next()), temp.nextInt());
+                    break;
+                case "mul":
+                    mul(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "mulh":
+                    mulh(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "div":
+                    div(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "rem":
+                    rem(regToIndex(temp.next()),regToIndex(temp.next()),regToIndex(temp.next()));
+                    break;
+                case "bne":
+                    input_bne(regToIndex(temp.next()),regToIndex(temp.next()),temp.next()); //Solve it?
+                    break;
+                case "jal":
+                    input_jal(temp.next()); //?
+//                    printAll(); Check
+                    break;
+                case "#":
+                    temp.nextLine();
+                    // pc++;
+                    break;
+                default:
+                    break;
             }
         }
         temp.close();
     }
-
-    private void input_subi() {
-        int rd, rs1, immd;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e sub rd, rs1, 8
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        immd = input.nextInt();
-        subi(rd, rs1, immd);
-        // Calling Subi operation of memory class
-    }
-
-    private void input_mul() {
-        int rd, rs1, rs2;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e mul rd, rs1, rs2
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        rs2 = regToIndex(input.next());
-        mul(rd, rs1, rs2);
-        // Calling Mul operation of memory class
-    }
-
-    private void input_mulh() {
-        int rd, rs1, rs2;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e mulh rd, rs1, rs2
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        rs2 = regToIndex(input.next());
-        mulh(rd, rs1, rs2);
-        // Calling Mulh operation of memory class
-    }
-
-    private void input_div() {
-        int rd, rs1, rs2;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e div rd, rs1, rs2
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        rs2 = regToIndex(input.next());
-        div(rd, rs1, rs2);
-        // Calling div operation of memory class
-    }
-
-    private void input_rem() {
-        int rd, rs1, rs2;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e rem rd, rs1, rs2
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        rs2 = regToIndex(input.next());
-        rem(rd, rs1, rs2);
-        // Calling Rem operation of memory class
-    }
-
+    
     private int getIndexOfT(char num) {
         switch (num) {
             case '0':

@@ -5,6 +5,7 @@ li t2, 222
 li s0, 101 
 # s0 to s9 working
 li s1, 202
+jal LABEL3
 LABEL99: 
     li s2, 212 
     li s9, 999
