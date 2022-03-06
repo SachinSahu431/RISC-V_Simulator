@@ -4,7 +4,7 @@
 .text
 .globl main
 
- main:
+main:
 
 li t0, 6 
 li s0, 0 
