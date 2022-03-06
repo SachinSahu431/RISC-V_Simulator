@@ -16,5 +16,6 @@ LABEL2:     li s11, 1100
 LABEL3:     
     li t4, 444
     li t5, 555
-    li t6, 6666
+    add s3, s2, s3
+    sub t6, t5, t4
     addi t1, t1, 1

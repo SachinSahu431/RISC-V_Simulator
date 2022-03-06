@@ -20,6 +20,7 @@ public class Input extends Register {
     Input() throws FileNotFoundException {
         code = new File(
                 "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
+        // "RISC-V_Simulator-main/TestCase/loop.txt");
         this.input = new Scanner(code);
     }
 
@@ -50,7 +51,7 @@ public class Input extends Register {
             // System.out.println(z);
             switch (z) {
                 case "add":
-                    add(regToIndex(input.next()),regToIndex(input.next()), regToIndex(input.next()));
+                    add(regToIndex(input.next()), regToIndex(input.next()), regToIndex(input.next()));
                     pc++;
                     break;
                 case "sub":
@@ -113,7 +114,11 @@ public class Input extends Register {
     private int regToIndex(String reg) {
         char c0 = reg.charAt(0);
         char c1 = reg.charAt(1);
-        char c2 = reg.charAt(2);
+        char c2 = '*';
+        try {
+            c2 = reg.charAt(2);
+        } catch (Exception e) {
+        }
         if ((c0 == 't') || (c0 == 's') || (c0 == 'a')) {
             switch (c0) {
                 case 't':
@@ -187,7 +192,7 @@ public class Input extends Register {
                 if (p.length() >= 3) {
                     switch (p.substring(0, 3)) {
                         case "add":
-                            add(regToIndex(temp.next()),regToIndex(temp.next()), regToIndex(temp.next()));
+                            add(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
                             temp_pc++;
                             break;
                         case "sub":
@@ -223,8 +228,9 @@ public class Input extends Register {
                             temp_pc++;
                             break;
                         case "li":
-                            System.out.println(regToIndex(p.substring(3,5))+" "+Integer.parseInt(p.substring(7,p.length()-1)));
-                            li(regToIndex(p.substring(3,5)),Integer.parseInt(p.substring(7,p.length()-1)));
+                            System.out.println(regToIndex(p.substring(3, 5)) + " "
+                                    + Integer.parseInt(p.substring(7, p.length() - 1)));
+                            li(regToIndex(p.substring(3, 5)), Integer.parseInt(p.substring(7, p.length() - 1)));
                             temp_pc++;
                             break;
                         case "# ":
@@ -237,7 +243,8 @@ public class Input extends Register {
                 if (p.length() >= 4) {
                     switch (p.substring(0, 4)) {
                         case "addi":
-                            addi(regToIndex(p.substring(5,7)), regToIndex(p.substring(9,11)),Integer.parseInt(p.substring(13)));
+                            addi(regToIndex(p.substring(5, 7)), regToIndex(p.substring(9, 11)),
+                                    Integer.parseInt(p.substring(13)));
                             temp_pc++;
                             break;
                         case "mulh":
