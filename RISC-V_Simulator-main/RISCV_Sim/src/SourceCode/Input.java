@@ -15,96 +15,95 @@ public class Input extends Register {
     Scanner input;
     int pc = 0;
     Vector<Labels> label = new Vector<Labels>();
+    // Note : PC count in label is showing from which pc input is for label
 
     Input() throws FileNotFoundException {
         code = new File(
                 "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
         this.input = new Scanner(code);
     }
-    
-    boolean checkLabel(String z){
+
+    boolean checkLabel(String z, int tpc) {
         if (z.indexOf(":") != -1) {
-            System.out.println("Label found at PC = " + pc);    
+            System.out.println("Label found at PC = " + tpc);
             System.out.println(z.substring(0, z.indexOf(":")).trim());
-            label.add(new Labels(pc,z.substring(0, z.indexOf(":")).trim()));
+            label.add(new Labels(tpc, z.substring(0, z.indexOf(":")).trim()));
             return true;
         }
         return false;
     }
+
     // A function used to take input of the program and call for other functions to
     // do the task
-    void TakeFileInputinMain() {
+    void TakeFileInputinMain() throws FileNotFoundException {
 
+        InputLabels();
         pc = 1;
         /*
          * PC increases by 1 after each instruction.
          * Continuous labels without any instruction in between them will not increase
          * PC
          */
-
         // For a paticular set of instructions it shall run efficiently
         while (input.hasNextLine()) {
             String z = input.next();
-            if(checkLabel(z)){
-                InputLabels();
-            } 
-            else{
-                switch (z) {
-                    case "add":
-                        input_Add();
-                        pc++;
-                        break;
-                    case "sub":
-                        input_Sub();
-                        pc++;
-                        break;
-                    case "lw":
-                        input_lw();
-                        pc++;
-                        break;
-                    case "li":
-                        input_li();
-                        pc++;
-                        break;
-                    case "addi":
-                        input_addi();
-                        pc++;
-                        break;
-                    case "subi":
-                        input_subi();
-                        pc++;
-                        break;
-                    case "mul":
-                        input_mul();
-                        pc++;
-                        break;
-                    case "mulh":
-                        input_mulh();
-                        pc++;
-                        break;
-                    case "div":
-                        input_div();
-                        pc++;
-                        break;
-                    case "rem":
-                        input_rem();
-                        pc++;
-                        break;
-                    case "bne":
-                        input_bne();
-                        pc++;
-                        break;
-                    case "jal":
-                        input_jal();
-                        pc++;
-                        break;
-                    case "#":
-                        input.nextLine();
-                        // pc++;
-                        break;
-                    default:
-                        break;
-                }
+            // System.out.println(z);
+            switch (z) {
+                case "add":
+                    add(regToIndex(input.next()),regToIndex(input.next()), regToIndex(input.next()));
+                    pc++;
+                    break;
+                case "sub":
+                    input_Sub();
+                    pc++;
+                    break;
+                case "lw":
+                    input_lw();
+                    pc++;
+                    break;
+                case "li":
+                    input_li();
+                    pc++;
+                    break;
+                case "addi":
+                    input_addi();
+                    pc++;
+                    break;
+                case "subi":
+                    input_subi();
+                    pc++;
+                    break;
+                case "mul":
+                    input_mul();
+                    pc++;
+                    break;
+                case "mulh":
+                    input_mulh();
+                    pc++;
+                    break;
+                case "div":
+                    input_div();
+                    pc++;
+                    break;
+                case "rem":
+                    input_rem();
+                    pc++;
+                    break;
+                case "bne":
+                    input_bne();
+                    pc++;
+                    break;
+                case "jal":
+                    input_jal(input.next());
+                    pc++;
+                    printAll();
+                    break;
+                case "#":
+                    input.nextLine();
+                    // pc++;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -150,17 +149,6 @@ public class Input extends Register {
         return 0;
     }
 
-    private void input_Add() {
-        int rd, rs1, rs2;
-        // throw new UnsupportedOperationException("Not supported yet.");
-        // Currently only accepts the standard way i.e add rd, rs1, rs2
-        rd = regToIndex(input.next());
-        rs1 = regToIndex(input.next());
-        rs2 = regToIndex(input.next());
-        add(rd, rs1, rs2);
-        // Calling Add operation of memory class
-    }
-
     private void input_Sub() {
         int rd, rs1, rs2;
         // throw new UnsupportedOperationException("Not supported yet.");
@@ -202,19 +190,114 @@ public class Input extends Register {
     }
 
     private void input_bne() {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        int rs2,rs1,jumpto = -1;
+        // throw new UnsupportedOperationException("Not supported yet.");
+        int rs2, rs1, jumpto = -1;
         rs1 = regToIndex(input.next());
         rs2 = regToIndex(input.next());
         String lb = input.next();
-        for(int i=0;i<label.size();i++){
-            if(lb == label.get(i).getId())
+        for (int i = 0; i < label.size(); i++) {
+            if (lb == label.get(i).getId())
                 jumpto = label.get(i).getLine();
         }
     }
 
-    private void input_jal() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    private void input_jal(String Label_Name) throws FileNotFoundException {
+        // throw new UnsupportedOperationException("Not supported yet.");
+        int index = -1;
+        for (int i = 0; i < label.size(); i++) {
+            // System.out.println(label.get(i).getId()+" ? "+Label_Name);
+            if (label.get(i).getId().equals(Label_Name)) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) {
+            throw new UnsupportedOperationException("Label " + Label_Name + " Not found. ");
+        }
+        Scanner temp = new Scanner(code);
+        int temp_pc = -index;
+        while (temp.hasNextLine()) {
+            String p = temp.nextLine();
+            p = p.strip();
+            System.out.println(p);
+            if (p.charAt(0) == '#' || p.charAt(1) == '#') {
+                continue;
+            }
+            if (temp_pc < label.get(index).getLine()) {
+                temp_pc++;
+            } else {
+                System.out.println("In Jal :" + p + "");
+                if (p.length() >= 3) {
+                    switch (p.substring(0, 3)) {
+                        case "add":
+                            add(regToIndex(temp.next()),regToIndex(temp.next()), regToIndex(temp.next()));
+                            temp_pc++;
+                            break;
+                        case "sub":
+                            input_Sub();
+                            temp_pc++;
+                            break;
+
+                        case "mul":
+                            input_mul();
+                            temp_pc++;
+                            break;
+
+                        case "div":
+                            input_div();
+                            temp_pc++;
+                            break;
+                        case "rem":
+                            input_rem();
+                            temp_pc++;
+                            break;
+                        case "#  ":
+                            temp.nextLine();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (p.length() >= 2) {
+                    switch (p.substring(0, 2)) {
+                        case "lw":
+                            input_lw();
+                            temp_pc++;
+                            break;
+                        case "li":
+                            System.out.println(regToIndex(p.substring(3,5))+" "+Integer.parseInt(p.substring(7,p.length()-1)));
+                            li(regToIndex(p.substring(3,5)),Integer.parseInt(p.substring(7,p.length()-1)));
+                            temp_pc++;
+                            break;
+                        case "# ":
+                            temp.nextLine();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (p.length() >= 4) {
+                    switch (p.substring(0, 4)) {
+                        case "addi":
+                            addi(regToIndex(p.substring(5,7)), regToIndex(p.substring(9,11)),Integer.parseInt(p.substring(13)));
+                            temp_pc++;
+                            break;
+                        case "mulh":
+                            input_mulh();
+                            temp_pc++;
+                            break;
+                        case "subi":
+                            input_subi();
+                            temp_pc++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        temp.close();
     }
 
     private void input_subi() {
@@ -348,15 +431,19 @@ public class Input extends Register {
         }
     }
 
-    private void InputLabels() {
-        
-        while(input.hasNextLine()){
-            if(checkLabel(input.next())){
+    private void InputLabels() throws FileNotFoundException {
+        int temp_PC = 1;
+        Scanner temp = new Scanner(code);
+        while (temp.hasNextLine()) {
+            String z = temp.nextLine();
+            if (checkLabel(z, temp_PC)) {
                 continue;
-            }else{
-                input.nextLine();
-                pc++;
+            } else {
+                if (z.charAt(0) != '#') {
+                    temp_PC++;
+                }
             }
         }
+        temp.close();
     }
 }

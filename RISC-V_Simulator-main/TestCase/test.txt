@@ -17,3 +17,4 @@ LABEL3:
     li t4, 444
     li t5, 555
     li t6, 6666
+    addi t1, t1, 1
