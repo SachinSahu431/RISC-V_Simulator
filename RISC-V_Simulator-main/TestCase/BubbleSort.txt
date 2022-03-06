@@ -4,6 +4,30 @@
 .text
 
 li t0, 6 #Size of the array
-li s0, 0 #Starting index of the words
+li s0, 0 #Starting index of the words (i=0)
+la t3, array # (array pointer) TODO: CHANGE THIS
 
 MainLoop:
+
+    beq s0, t0, exit    # if (i==size of array) => exit
+    li s1, 0    # (j=0)
+
+    InnerLoop:
+        beq s1, t0, exitInnerLoop # if (j==size of array) => exitInnerLoop
+        lw a0, 0(t3)    # a0 = array[x]
+        lw a1, 4(t3)    # a1 = array[x+1]
+        ble a0, a1, continue    # if (array[x] <= array[x+1]) => continue
+                                # else swap
+        sw a1, 0(t3)    # a1 = array[x]
+        sw a0, 4(t3)    # a0 = array[x+1]
+    continue:
+        addi s1, s1, 1  # j++
+        addi t3, t3, 4  # pointer increment
+        j InnerLoop
+    exitInnerLoop:
+        addi s0, s0, 1 # i++
+        j MainLoop
+# EXIT
+
+
+
