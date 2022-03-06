@@ -20,7 +20,7 @@ public class Input extends Register {
 
     Input() throws FileNotFoundException {
         code = new File(
-                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
+                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\BubbleSort2.txt");
         // "RISC-V_Simulator-main/TestCase/loop.txt");
         this.input = new Scanner(code);
     }
@@ -47,9 +47,12 @@ public class Input extends Register {
          * PC
          */
         //Assume 1st Line is .data and succeeding is the list of assemblers corresponding corresponding it
-        /*input.nextLine();
+        input.nextLine();
         DataSegment data = new DataSegment(input.next());
-        data.workOnId(input.nextLine());*/
+        data.workOnId(input.nextLine());
+        for(int i=0;i<data.valueInt.size();i++)
+            Memory[i] = data.valueInt.get(i);
+        input.nextLine();
         // For a paticular set of instructions it shall run efficiently
         while (input.hasNextLine()) {
             String z = input.next();
@@ -60,7 +63,7 @@ public class Input extends Register {
             p=p+",";
 //            System.out.println(z+":"+p);
             String[] inst = p.split("[,]",0);
-//            System.out.println(Arrays.asList(inst));
+            System.out.println(Arrays.asList(inst));
             switch (z) {
                 case "add":
                     add(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
@@ -109,7 +112,7 @@ public class Input extends Register {
                 case "jal":
                     input_jal(inst[0]);
                     pc++;
-                    printAll();
+//                    printAll();
                     break;
                 case "#":
                     // pc++;
@@ -165,13 +168,16 @@ public class Input extends Register {
         return 0;
     }
 
-    private void input_bne(int rs1, int rs2, String lb) {
-         throw new UnsupportedOperationException("Not supported yet.");
-        /*int jumpto = -1;
+    private void input_bne(int rs1, int rs2, String lb) throws FileNotFoundException {
+         //throw new UnsupportedOperationException("Not supported yet.");
+        int jumpto = -1;
         for (int i = 0; i < label.size(); i++) {
             if (lb == label.get(i).getId())
                 jumpto = label.get(i).getLine();
-        }*/
+        }
+        if(jumpto != -1){
+            input_jal(lb);
+        }
     }
 
     private void input_jal(String Label_Name) throws FileNotFoundException {

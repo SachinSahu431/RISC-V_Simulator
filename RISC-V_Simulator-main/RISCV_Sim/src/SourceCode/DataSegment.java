@@ -8,10 +8,12 @@ public class DataSegment {
     private String id; // Type of the data structure
     private String valueString;
     Vector<Integer> valueInt = new Vector<>();
+    int stored_Address;
 
     DataSegment(String id) {
         this.id = id;
         this.valueString = "";
+        this.stored_Address = 0;
     }
 
     String getId() {
