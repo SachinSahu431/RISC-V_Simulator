@@ -23,7 +23,7 @@ public class Input extends Register {
                 // "D:\\Work\\NOTES\\Computer
                 // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
                 // "RISC-V_Simulator-main/TestCase/loop2.txt");
-                "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
+                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\BubbleSort2.txt");
         // "RISC-V_Simulator-main/TestCase/BubbleSort2.txt");
         this.input = new Scanner(code);
     }
@@ -55,7 +55,7 @@ public class Input extends Register {
         // Assume 1st Line is .data and succeeding is the list of assemblers
         // corresponding corresponding it
 
-        String s = input.nextLine();
+         input.nextLine();
         System.out.println("shuru hogaya");
         data = new DataSegment(input.next());
         data.workOnId(input.nextLine());
@@ -136,6 +136,10 @@ public class Input extends Register {
                     pc++;
                     // printAll();
                     break;
+                case "ble":
+                    input_ble(regToIndex(inst[0]), regToIndex(inst[1]), inst[2]);
+                    pc++;
+                    break;
                 case "#":
                     // pc++;
                     break;
@@ -195,24 +199,36 @@ public class Input extends Register {
         // throw new UnsupportedOperationException("Not supported yet.");
         int jumpto = -1;
         for (int i = 0; i < label.size(); i++) {
-            if (lb == label.get(i).getId())
+            if (lb.equals(label.get(i).getId()))
                 jumpto = label.get(i).getLine();
         }
         if (jumpto != -1) {
-            input_jal(lb);
+            if(Register[rs1] != Register[rs2])
+                input_jal(lb);
+            else
+                return;
         }
+//        else{
+//            throw new UnsupportedOperationException("Label not supported.");
+//        }
     }
 
     private void input_beq(int rs1, int rs2, String lb) throws FileNotFoundException {
         // throw new UnsupportedOperationException("Not supported yet.");
         int jumpto = -1;
         for (int i = 0; i < label.size(); i++) {
-            if (lb == label.get(i).getId())
+            if (lb.equals(label.get(i).getId()))
                 jumpto = label.get(i).getLine();
         }
         if (jumpto != -1) {
-            input_jal(lb);
+            if(Register[rs1] == Register[rs2])
+                input_jal(lb);
+            else
+                return;
         }
+//        else{
+//            throw new UnsupportedOperationException("Label not supported.");
+//        }
     }
 
     private void input_jal(String Label_Name) throws FileNotFoundException {
@@ -387,5 +403,23 @@ public class Input extends Register {
             }
         }
         temp.close();
+    }
+
+    private void input_ble(int rs1, int rs2, String lb) throws FileNotFoundException {
+        //throw new UnsupportedOperationException("Not supported yet."); 
+        int jumpto = -1;
+        for (int i = 0; i < label.size(); i++) {
+            if (lb.equals(label.get(i).getId()))
+                jumpto = label.get(i).getLine();
+        }
+        if (jumpto != -1) {
+            if(Register[rs1] <= Register[rs2])
+                input_jal(lb);
+            else
+                return;
+        }
+//        else{
+//            throw new UnsupportedOperationException("Label not supported.");
+//        }
     }
 }
