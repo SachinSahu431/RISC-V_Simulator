@@ -135,6 +135,10 @@ public class Input extends Register {
                     pc++;
                     // printAll();
                     break;
+                case "ble":
+                    input_ble(regToIndex(inst[0]), regToIndex(inst[1]), inst[2]);
+                    pc++;
+                    break;
                 case "#":
                     // pc++;
                     break;
@@ -191,30 +195,39 @@ public class Input extends Register {
     }
 
     private void input_bne(int rs1, int rs2, String lb) throws FileNotFoundException {
-        if (branchNotEqual(rs1, rs2)) {// throw new UnsupportedOperationException("Not supported yet.");
-            int jumpto = -1;
-            for (int i = 0; i < label.size(); i++) {
-                if (lb.equals(label.get(i).getId()))
-                    jumpto = label.get(i).getLine();
-            }
-            if (jumpto != -1) {
-                input_jal(lb);
-            }
+        // throw new UnsupportedOperationException("Not supported yet.");
+        int jumpto = -1;
+        for (int i = 0; i < label.size(); i++) {
+            if (lb.equals(label.get(i).getId()))
+                jumpto = label.get(i).getLine();
         }
+        if (jumpto != -1) {
+            if (Register[rs1] != Register[rs2])
+                input_jal(lb);
+            else
+                return;
+        }
+        // else{
+        // throw new UnsupportedOperationException("Label not supported.");
+        // }
     }
 
     private void input_beq(int rs1, int rs2, String lb) throws FileNotFoundException {
-        if (branchEqualTo(rs1, rs2)) {// throw new UnsupportedOperationException("Not")}reg2)){// throw new
-                                      // UnsupportedOperationException("Not supported yet.");
-            int jumpto = -1;
-            for (int i = 0; i < label.size(); i++) {
-                if (lb.equals(label.get(i).getId()))
-                    jumpto = label.get(i).getLine();
-            }
-            if (jumpto != -1) {
-                input_jal(lb);
-            }
+        // throw new UnsupportedOperationException("Not supported yet.");
+        int jumpto = -1;
+        for (int i = 0; i < label.size(); i++) {
+            if (lb.equals(label.get(i).getId()))
+                jumpto = label.get(i).getLine();
         }
+        if (jumpto != -1) {
+            if (Register[rs1] == Register[rs2])
+                input_jal(lb);
+            else
+                return;
+        }
+        // else{
+        // throw new UnsupportedOperationException("Label not supported.");
+        // }
     }
 
     private void input_jal(String Label_Name) throws FileNotFoundException {
@@ -389,5 +402,23 @@ public class Input extends Register {
             }
         }
         temp.close();
+    }
+
+    private void input_ble(int rs1, int rs2, String lb) throws FileNotFoundException {
+        // throw new UnsupportedOperationException("Not supported yet.");
+        int jumpto = -1;
+        for (int i = 0; i < label.size(); i++) {
+            if (lb.equals(label.get(i).getId()))
+                jumpto = label.get(i).getLine();
+        }
+        if (jumpto != -1) {
+            if (Register[rs1] <= Register[rs2])
+                input_jal(lb);
+            else
+                return;
+        }
+        // else{
+        // throw new UnsupportedOperationException("Label not supported.");
+        // }
     }
 }

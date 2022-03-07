@@ -29,4 +29,3 @@ MainLoop:
     exitInnerLoop:
         addi s0, s0, 1 
         j MainLoop
-exit:
