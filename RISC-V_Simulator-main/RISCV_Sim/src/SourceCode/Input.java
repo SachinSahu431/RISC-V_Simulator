@@ -22,8 +22,8 @@ public class Input extends Register {
         code = new File(
                 // "D:\\Work\\NOTES\\Computer
                 // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
-                // "RISC-V_Simulator-main/TestCase/loop2.txt");
-                "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
+                "RISC-V_Simulator-main/TestCase/loop2.txt");
+        // "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
         // "RISC-V_Simulator-main/TestCase/BubbleSort2.txt");
         this.input = new Scanner(code);
     }
@@ -55,10 +55,9 @@ public class Input extends Register {
         // Assume 1st Line is .data and succeeding is the list of assemblers
         // corresponding corresponding it
 
-        String s = input.nextLine();
-        System.out.println("shuru hogaya");
         data = new DataSegment(input.next());
         data.workOnId(input.nextLine());
+        System.out.println("shuru hogaya");
         for (int i = 0; i < data.valueInt.size(); i++)
             Memory[i] = data.valueInt.get(i);
         input.nextLine();
@@ -192,26 +191,29 @@ public class Input extends Register {
     }
 
     private void input_bne(int rs1, int rs2, String lb) throws FileNotFoundException {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int jumpto = -1;
-        for (int i = 0; i < label.size(); i++) {
-            if (lb == label.get(i).getId())
-                jumpto = label.get(i).getLine();
-        }
-        if (jumpto != -1) {
-            input_jal(lb);
+        if (branchNotEqual(rs1, rs2)) {// throw new UnsupportedOperationException("Not supported yet.");
+            int jumpto = -1;
+            for (int i = 0; i < label.size(); i++) {
+                if (lb.equals(label.get(i).getId()))
+                    jumpto = label.get(i).getLine();
+            }
+            if (jumpto != -1) {
+                input_jal(lb);
+            }
         }
     }
 
     private void input_beq(int rs1, int rs2, String lb) throws FileNotFoundException {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int jumpto = -1;
-        for (int i = 0; i < label.size(); i++) {
-            if (lb == label.get(i).getId())
-                jumpto = label.get(i).getLine();
-        }
-        if (jumpto != -1) {
-            input_jal(lb);
+        if (branchEqualTo(rs1, rs2)) {// throw new UnsupportedOperationException("Not")}reg2)){// throw new
+                                      // UnsupportedOperationException("Not supported yet.");
+            int jumpto = -1;
+            for (int i = 0; i < label.size(); i++) {
+                if (lb.equals(label.get(i).getId()))
+                    jumpto = label.get(i).getLine();
+            }
+            if (jumpto != -1) {
+                input_jal(lb);
+            }
         }
     }
 

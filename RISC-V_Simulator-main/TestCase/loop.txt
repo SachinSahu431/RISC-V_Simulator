@@ -1,10 +1,10 @@
-addi s4, 6
-addi s5, 2
-addi s3, 0 
+addi s4, s4, 6
+addi s5, s5, 2
+addi s3, s3, 0 
 Loop: beq s4, s5, End   # check s4 == s5
       add s3, s3, s5
       addi s4, s4, -1
       j Loop
-End: addi s6, 999
+End: addi s6, s6, 999
 
 # we should get s5 = 999, s3 = 8

@@ -69,7 +69,8 @@ public class DataSegment {
     }
 
     private void AssemblerNotPresent(String s) {
-        throw new UnsupportedOperationException("Not supported yet .");
+        // throw new UnsupportedOperationException("Not supported yet .");
+        System.out.println("Assembler not present in the data segment");
     }
 
     int getWord(int index) {
