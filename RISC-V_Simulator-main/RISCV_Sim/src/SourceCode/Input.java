@@ -92,7 +92,6 @@ public class Input extends Register {
                     break;
                 case "sw":
                     System.out.println("sw " + inst[0] + " " + inst[1]);
-                    // loadWord(regToIndex(inst[0]), addressToIndex(inst[1]));
                     storeWord(regToIndex(inst[0]), addressToIndex(inst[1]));
                     pc++;
                     break;
