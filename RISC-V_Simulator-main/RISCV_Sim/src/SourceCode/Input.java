@@ -7,6 +7,8 @@ package SourceCode;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -16,14 +18,17 @@ public class Input extends Register {
     Scanner input;
     int pc = 0;
     Vector<Labels> label = new Vector<Labels>();
+    Vector<String> InputCode = new Vector<String>();
+    Map<String, Integer> labels = new HashMap<String, Integer>();
     // Note : PC count in label is showing from which pc input is for label
 
     Input() throws FileNotFoundException {
         code = new File(
                 // "D:\\Work\\NOTES\\Computer
                 // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
-                "RISC-V_Simulator-main/TestCase/loop2.txt");
-        // "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
+                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\loop2.txt");
+//                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test2.txt");
+// "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
         // "RISC-V_Simulator-main/TestCase/BubbleSort2.txt");
         this.input = new Scanner(code);
     }
@@ -42,112 +47,103 @@ public class Input extends Register {
     // do the task
     DataSegment data = new DataSegment(null);
 
-    void TakeFileInputinMain() throws FileNotFoundException {
-
-        InputLabels();
-        pc = 1;
-        System.out.println("chaliye shuru karte h");
-        /*
-         * PC increases by 1 after each instruction.
-         * Continuous labels without any instruction in between them will not increase
-         * PC
-         */
-        // Assume 1st Line is .data and succeeding is the list of assemblers
-        // corresponding corresponding it
-
-        data = new DataSegment(input.next());
-        data.workOnId(input.nextLine());
-        System.out.println("shuru hogaya");
-        for (int i = 0; i < data.valueInt.size(); i++)
-            Memory[i] = data.valueInt.get(i);
-        input.nextLine();
-        // System.out.println(data.getWord(0));
-
-        // For a paticular set of instructions it shall run efficiently
+    // LETS ASSUME THAT EVERY COMMENT IS IN NEXT LINE I.E. SAME LINE DOES NOT CONTAI
+    // ANY COMMENTS
+    void CollectInput() {
+        // STORING THE INPUT
+        int i = 0;
         while (input.hasNextLine()) {
-            String z = input.next();
-            z = z.replaceAll("\\s", "");
-            String p;
-            p = input.nextLine();
-            p = p.replaceAll("\\s", "");
-            p = p + ",";
-            // System.out.println(z+":"+p);
-            String[] inst = p.split("[,]", 0);
-            System.out.println(Arrays.asList(inst));
-            switch (z) {
-                case "add":
-                    add(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
-                    pc++;
-                    break;
-                case "sub":
-                    sub(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
-                    pc++;
-                    break;
-                case "lw":
-                    System.out.println("lw " + inst[0] + " " + inst[1]);
-                    // loadWord(regToIndex(inst[0]), addressToIndex(inst[1]));
-                    loadWord(regToIndex(inst[0]), addressToIndex(inst[1]));
-                    pc++;
-                    break;
-                case "sw":
-                    System.out.println("sw " + inst[0] + " " + inst[1]);
-                    storeWord(regToIndex(inst[0]), addressToIndex(inst[1]));
-                    pc++;
-                    break;
-                case "li":
-                    li(regToIndex(inst[0]), Integer.parseInt(inst[1]));
-                    pc++;
-                    break;
-                case "addi":
-                    addi(regToIndex(inst[0]), regToIndex(inst[1]), Integer.parseInt(inst[2]));
-                    pc++;
-                    break;
-                case "subi":
-                    subi(regToIndex(inst[0]), regToIndex(inst[1]), Integer.parseInt(inst[2]));
-                    pc++;
-                    break;
-                case "mul":
-                    mul(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
-                    pc++;
-                    break;
-                case "mulh":
-                    mulh(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
-                    pc++;
-                    break;
-                case "div":
-                    div(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
-                    pc++;
-                    break;
-                case "rem":
-                    rem(regToIndex(inst[0]), regToIndex(inst[1]), regToIndex(inst[2]));
-                    pc++;
-                    break;
-                case "bne":
-                    input_bne(regToIndex(inst[0]), regToIndex(inst[1]), inst[2]);
-                    pc++;
-                    break;
-                case "beq":
-                    input_beq(regToIndex(inst[0]), regToIndex(inst[1]), inst[2]);
-                    pc++;
-                    break;
-                case "jal":
-                    input_jal(inst[0]);
-                    pc++;
-                    // printAll();
-                    break;
-                case "ble":
-                    input_ble(regToIndex(inst[0]), regToIndex(inst[1]), inst[2]);
-                    pc++;
-                    break;
-                case "#":
-                    // pc++;
-                    break;
-                default:
-                    break;
+            String s = input.nextLine();
+            s = s.replaceAll("\\s", "");
+            // STATEMENT MAPING LABELS WITH CORRESPONDING VALUE WHERE THEY HAVE TO RETURN
+            if (s.indexOf(":") != -1)
+                labels.put(s.substring(0, s.indexOf(":")).trim(), i);
+            // s = s + ",";
+            if (s.contains("#"))
+                continue;
+            InputCode.add(s);
+            i++;
+        }
+        // CHECK 0.0
+        // System.out.print("-------------------------Let's Check
+        // Input------------------");
+        // for(int j=0;j<InputCode.size();j++)
+        // System.out.println(InputCode.get(j));
+
+        i = 0;
+        while (i < InputCode.size()) {
+            // SKIPPING THE LABEL PART
+            if (InputCode.elementAt(i).contains(":") || InputCode.elementAt(i).contains(".")) {
+                i++;
+                continue;
             }
+
+            String[] inst = InputCode.elementAt(i).split("[,]", 0);
+            //CHECK 2.0
+            System.out.println("Input Code: "+InputCode.elementAt(i));
+            System.out.println("Break outs: "+Arrays.toString(inst));
+            System.out.println("-----------------------");
+            if (InputCode.elementAt(i).contains("addi")) {
+                addi(regToIndex(inst[0].substring(4)), regToIndex(inst[1]), Integer.parseInt(inst[2]));
+            } else if (InputCode.elementAt(i).contains("add")) {
+                add(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+            } else if (InputCode.elementAt(i).contains("jne")) {
+                // Jump Command
+            } else if (InputCode.elementAt(i).contains("jal")) {
+//                input_jal(inst[0].substring(3));
+                Register[1] = i+1;
+                i = labels.get(inst[0].substring(3))+1;
+            } else if (InputCode.elementAt(i).contains("ble")) {
+                if(Register[regToIndex(inst[0].substring(3))] < Register[regToIndex(inst[1])]){
+                    i = labels.get(inst[2])+1;
+                }
+            }else if(InputCode.elementAt(i).contains("bne")){
+                if(Register[regToIndex(inst[0].substring(3))] != Register[regToIndex(inst[1])]){
+                    i = labels.get(inst[2])+1;
+                }
+            }else if(InputCode.elementAt(i).contains("bgt")){
+                if(Register[regToIndex(inst[0].substring(3))] > Register[regToIndex(inst[1])]){
+                    i = labels.get(inst[2])+1;
+                }
+            }else if (InputCode.elementAt(i).contains("beq")) {
+                if(Register[regToIndex(inst[0].substring(3))] == Register[regToIndex(inst[1])]){
+                    i = labels.get(inst[2])+1;
+                }
+            } else if (InputCode.elementAt(i).contains("lw")) {
+                 System.out.println("lw " + inst[0] + " " + inst[1]);
+                 loadWord(regToIndex(inst[0].substring(2)), addressToIndex(inst[1]));
+            } else if (InputCode.elementAt(i).contains("li")) {
+                li(regToIndex(inst[0].substring(2)), Integer.parseInt(inst[1]));
+            } else if (InputCode.elementAt(i).contains("sw")) {
+                System.out.println("sw " + inst[0] + " " + inst[1]);
+                storeWord(regToIndex(inst[0].substring(2)), addressToIndex(inst[1]));
+            } else if (InputCode.elementAt(i).contains("subi")) {
+                subi(regToIndex(inst[0].substring(4)), regToIndex(inst[1]), Integer.parseInt(inst[2]));
+            } else if (InputCode.elementAt(i).contains("sub")) {
+                sub(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+            } else if (InputCode.elementAt(i).contains("mulh")) {
+                mulh(regToIndex(inst[0].substring(4)), regToIndex(inst[1]), regToIndex(inst[2]));
+            } else if (InputCode.elementAt(i).contains("mul")) {
+                mul(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+            } else if (InputCode.elementAt(i).contains("div")) {
+                div(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+            } else if (InputCode.elementAt(i).contains("rem")) {
+                rem(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+            }else if(InputCode.elementAt(i).contains("jr") && InputCode.elementAt(i).contains("ra")){
+                i = Register[1];
+            }else if (InputCode.elementAt(i).contains("j")) {
+                System.out.println(inst[0].substring(1,inst[0].length()));
+                i= labels.get(inst[0].substring(1,inst[0].length()));
+            } else if(InputCode.elementAt(i).contains(".exit")){
+                break;
+            }else{
+                System.out.println(InputCode.elementAt(i) + " :Thinking to invent some new command here or what...");
+            }
+            
+            i++;
         }
     }
-
+    
     // A method that converts input string which contains a target register to index
     // of that particualr register
     private int regToIndex(String reg) {
@@ -193,123 +189,7 @@ public class Input extends Register {
         // return 0;
         return (offset / 4);
     }
-
-    private void input_bne(int rs1, int rs2, String lb) throws FileNotFoundException {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int jumpto = -1;
-        for (int i = 0; i < label.size(); i++) {
-            if (lb.equals(label.get(i).getId()))
-                jumpto = label.get(i).getLine();
-        }
-        if (jumpto != -1) {
-            if (Register[rs1] != Register[rs2])
-                input_jal(lb);
-            else
-                return;
-        }
-        // else{
-        // throw new UnsupportedOperationException("Label not supported.");
-        // }
-    }
-
-    private void input_beq(int rs1, int rs2, String lb) throws FileNotFoundException {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int jumpto = -1;
-        for (int i = 0; i < label.size(); i++) {
-            if (lb.equals(label.get(i).getId()))
-                jumpto = label.get(i).getLine();
-        }
-        if (jumpto != -1) {
-            if (Register[rs1] == Register[rs2])
-                input_jal(lb);
-            else
-                return;
-        }
-        // else{
-        // throw new UnsupportedOperationException("Label not supported.");
-        // }
-    }
-
-    private void input_jal(String Label_Name) throws FileNotFoundException {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int index = -1;
-        for (int i = 0; i < label.size(); i++) {
-            // System.out.println(label.get(i).getId()+" ? "+Label_Name);
-            if (label.get(i).getId().equals(Label_Name)) {
-                index = i;
-                break;
-            }
-        }
-        if (index == -1) {
-            throw new UnsupportedOperationException("Label " + Label_Name + " Not found. ");
-        }
-        Scanner temp = new Scanner(code);
-        while (temp.hasNextLine()) {
-            String p = temp.next();
-            if (p.indexOf(":") != -1 && p.contains(label.get(index).getId())) {
-                break;
-            } else {
-                temp.nextLine();
-            }
-        }
-        while (temp.hasNextLine()) {
-            String z = temp.next();
-            // System.out.println(z);
-            switch (z) {
-                case "add":
-                    add(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                    break;
-                case "sub":
-                    sub(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                    break;
-                case "lw":
-                    loadWord(regToIndex(temp.next()), addressToIndex(temp.next()));
-                    break;
-                case "sw":
-                    storeWord(regToIndex(temp.next()), addressToIndex(temp.next()));
-                    break;
-                case "li":
-                    li(regToIndex(temp.next()), temp.nextInt());
-                    break;
-                case "addi":
-                    addi(regToIndex(temp.next()), regToIndex(temp.next()), temp.nextInt());
-                    break;
-                case "subi":
-                    subi(regToIndex(temp.next()), regToIndex(temp.next()), temp.nextInt());
-                    break;
-                case "mul":
-                    mul(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                    break;
-                case "mulh":
-                    mulh(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                    break;
-                case "div":
-                    div(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                    break;
-                case "rem":
-                    rem(regToIndex(temp.next()), regToIndex(temp.next()), regToIndex(temp.next()));
-                    break;
-                case "bne":
-                    input_bne(regToIndex(temp.next()), regToIndex(temp.next()), temp.next()); // Solve it?
-                    break;
-                case "beq":
-                    input_beq(regToIndex(temp.next()), regToIndex(temp.next()), temp.next()); // Solve it?
-                    break;
-                case "jal":
-                    input_jal(temp.next()); // ?
-                    // printAll(); Check
-                    break;
-                case "#":
-                    temp.nextLine();
-                    // pc++;
-                    break;
-                default:
-                    break;
-            }
-        }
-        temp.close();
-    }
-
+    
     private int getIndexOfT(char num) {
         switch (num) {
             case '0':
@@ -384,41 +264,5 @@ public class Input extends Register {
             default:
                 return -1;
         }
-    }
-
-    private void InputLabels() throws FileNotFoundException {
-        int temp_PC = 1;
-        Scanner temp = new Scanner(code);
-        while (temp.hasNextLine()) {
-            String z = temp.nextLine();
-            if (checkLabel(z, temp_PC)) {
-                continue;
-            } else {
-                if (z.length() > 0) {
-                    if (z.charAt(0) != '#') {
-                        temp_PC++;
-                    }
-                }
-            }
-        }
-        temp.close();
-    }
-
-    private void input_ble(int rs1, int rs2, String lb) throws FileNotFoundException {
-        // throw new UnsupportedOperationException("Not supported yet.");
-        int jumpto = -1;
-        for (int i = 0; i < label.size(); i++) {
-            if (lb.equals(label.get(i).getId()))
-                jumpto = label.get(i).getLine();
-        }
-        if (jumpto != -1) {
-            if (Register[rs1] <= Register[rs2])
-                input_jal(lb);
-            else
-                return;
-        }
-        // else{
-        // throw new UnsupportedOperationException("Label not supported.");
-        // }
     }
 }

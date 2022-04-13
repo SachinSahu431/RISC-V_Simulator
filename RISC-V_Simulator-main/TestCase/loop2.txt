@@ -15,3 +15,4 @@ Loop:
       j Loop
 End: 
       addi s6, s6, 999
+      #.exit
