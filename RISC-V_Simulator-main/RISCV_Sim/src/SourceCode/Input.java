@@ -24,11 +24,17 @@ public class Input extends Register {
 
     Input() throws FileNotFoundException {
         code = new File(
-                // "D:\\Work\\NOTES\\Computer
-                // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
-                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\loop2.txt");
-//                "D:\\Work\\NOTES\\Computer Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test2.txt");
-// "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
+                "D:/SACHIN/Sachin_Docs/sem 4/CO/RISC project/gh/RISC-V_Simulator/RISC-V_Simulator-main/TestCase/loop2.txt");
+        // "D:/SACHIN/Sachin_Docs/sem 4/CO/RISC
+        // project/gh/RISC-V_Simulator/RISC-V_Simulator-main/TestCase/loop2.txt");
+        // gh\RISC-V_Simulator\RISC-V_Simulator-main\TestCase\loop2.txt
+        // "D:\\Work\\NOTES\\Computer
+        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
+        // "D:\\Work\\NOTES\\Computer
+        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\loop2.txt");
+        // "D:\\Work\\NOTES\\Computer
+        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test2.txt");
+        // "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
         // "RISC-V_Simulator-main/TestCase/BubbleSort2.txt");
         this.input = new Scanner(code);
     }
@@ -79,9 +85,9 @@ public class Input extends Register {
             }
 
             String[] inst = InputCode.elementAt(i).split("[,]", 0);
-            //CHECK 2.0
-            System.out.println("Input Code: "+InputCode.elementAt(i));
-            System.out.println("Break outs: "+Arrays.toString(inst));
+            // CHECK 2.0
+            System.out.println("Input Code: " + InputCode.elementAt(i));
+            System.out.println("Break outs: " + Arrays.toString(inst));
             System.out.println("-----------------------");
             if (InputCode.elementAt(i).contains("addi")) {
                 addi(regToIndex(inst[0].substring(4)), regToIndex(inst[1]), Integer.parseInt(inst[2]));
@@ -90,28 +96,28 @@ public class Input extends Register {
             } else if (InputCode.elementAt(i).contains("jne")) {
                 // Jump Command
             } else if (InputCode.elementAt(i).contains("jal")) {
-//                input_jal(inst[0].substring(3));
-                Register[1] = i+1;
-                i = labels.get(inst[0].substring(3))+1;
+                // input_jal(inst[0].substring(3));
+                Register[1] = i + 1;
+                i = labels.get(inst[0].substring(3)) + 1;
             } else if (InputCode.elementAt(i).contains("ble")) {
-                if(Register[regToIndex(inst[0].substring(3))] < Register[regToIndex(inst[1])]){
-                    i = labels.get(inst[2])+1;
+                if (Register[regToIndex(inst[0].substring(3))] < Register[regToIndex(inst[1])]) {
+                    i = labels.get(inst[2]) + 1;
                 }
-            }else if(InputCode.elementAt(i).contains("bne")){
-                if(Register[regToIndex(inst[0].substring(3))] != Register[regToIndex(inst[1])]){
-                    i = labels.get(inst[2])+1;
+            } else if (InputCode.elementAt(i).contains("bne")) {
+                if (Register[regToIndex(inst[0].substring(3))] != Register[regToIndex(inst[1])]) {
+                    i = labels.get(inst[2]) + 1;
                 }
-            }else if(InputCode.elementAt(i).contains("bgt")){
-                if(Register[regToIndex(inst[0].substring(3))] > Register[regToIndex(inst[1])]){
-                    i = labels.get(inst[2])+1;
+            } else if (InputCode.elementAt(i).contains("bgt")) {
+                if (Register[regToIndex(inst[0].substring(3))] > Register[regToIndex(inst[1])]) {
+                    i = labels.get(inst[2]) + 1;
                 }
-            }else if (InputCode.elementAt(i).contains("beq")) {
-                if(Register[regToIndex(inst[0].substring(3))] == Register[regToIndex(inst[1])]){
-                    i = labels.get(inst[2])+1;
+            } else if (InputCode.elementAt(i).contains("beq")) {
+                if (Register[regToIndex(inst[0].substring(3))] == Register[regToIndex(inst[1])]) {
+                    i = labels.get(inst[2]) + 1;
                 }
             } else if (InputCode.elementAt(i).contains("lw")) {
-                 System.out.println("lw " + inst[0] + " " + inst[1]);
-                 loadWord(regToIndex(inst[0].substring(2)), addressToIndex(inst[1]));
+                System.out.println("lw " + inst[0] + " " + inst[1]);
+                loadWord(regToIndex(inst[0].substring(2)), addressToIndex(inst[1]));
             } else if (InputCode.elementAt(i).contains("li")) {
                 li(regToIndex(inst[0].substring(2)), Integer.parseInt(inst[1]));
             } else if (InputCode.elementAt(i).contains("sw")) {
@@ -129,21 +135,21 @@ public class Input extends Register {
                 div(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
             } else if (InputCode.elementAt(i).contains("rem")) {
                 rem(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
-            }else if(InputCode.elementAt(i).contains("jr") && InputCode.elementAt(i).contains("ra")){
+            } else if (InputCode.elementAt(i).contains("jr") && InputCode.elementAt(i).contains("ra")) {
                 i = Register[1];
-            }else if (InputCode.elementAt(i).contains("j")) {
-                System.out.println(inst[0].substring(1,inst[0].length()));
-                i= labels.get(inst[0].substring(1,inst[0].length()));
-            } else if(InputCode.elementAt(i).contains(".exit")){
+            } else if (InputCode.elementAt(i).contains("j")) {
+                System.out.println(inst[0].substring(1, inst[0].length()));
+                i = labels.get(inst[0].substring(1, inst[0].length()));
+            } else if (InputCode.elementAt(i).contains(".exit")) {
                 break;
-            }else{
+            } else {
                 System.out.println(InputCode.elementAt(i) + " :Thinking to invent some new command here or what...");
             }
-            
+
             i++;
         }
     }
-    
+
     // A method that converts input string which contains a target register to index
     // of that particualr register
     private int regToIndex(String reg) {
@@ -189,7 +195,7 @@ public class Input extends Register {
         // return 0;
         return (offset / 4);
     }
-    
+
     private int getIndexOfT(char num) {
         switch (num) {
             case '0':

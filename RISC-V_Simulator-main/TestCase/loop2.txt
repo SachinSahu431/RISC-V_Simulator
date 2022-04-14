@@ -4,7 +4,6 @@
 .globl main
 
 main:
-
 addi s4, s4, 6
 addi s5, s5, 2
 addi s3, s3, 11 
@@ -14,5 +13,6 @@ Loop:
       addi s4, s4, -1
       j Loop
 End: 
+
       addi s6, s6, 999
       #.exit
