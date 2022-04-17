@@ -1,21 +1,121 @@
 package SourceCode;
 
+import java.util.Vector;
+
 public class Pipelining {
 
-    private void ProcessPipeline(int InputCode[]) {
-        String s1 = "", s2 = "";
+    Vector<String> InputCode;
+    // int matrix;
 
-        while(){
-            if (s2.contains("lw") || InputCode.elementAt(i).contains("add")) {
-                String s[] = InputCode.elementAt(i).split("[,]", 0);
+    Vector<Vector<String>> matrix = new Vector<Vector<String>>();
+    // InputCode.pu/
+    // ("adds3,s3,s5");
 
-            } else if (s2.contains("lw") || InputCode.contains("sub")) {
-            }else if(){
+    // InputCode.push("adds3,s3,s5");
+
+    public void ProcessPipeline(Vector<String> InputCode, boolean dataForwarding) {
+
+        // CHECK 0.0
+        // System.out.print("-------------------------Let's Check
+        // Input------------------");
+
+        // int ii = 0;
+        // while (ii < InputCode.size()) {
+        // // SKIPPING THE LABEL PART
+        // if (InputCode.elementAt(ii).contains(":") ||
+        // InputCode.elementAt(ii).contains(".")) {
+        // ii++;
+        // continue;
+        // }
+
+        // for (int j = 0; j < InputCode.size(); j++)
+        // System.out.println(InputCode.get(j));
+        dataForwarding = false;
+        // dataForwarding = true;
+
+        String prev = "", prevprev = "";
+        int stallcount = 0;
+        int i = 0;
+        System.out.println("################");
+
+        while (i < InputCode.size()) {
+
+            if (InputCode.elementAt(i).contains(":") ||
+                    InputCode.elementAt(i).contains(".")) {
+                i++;
+                continue;
             }
+
+            System.out.println();
+
+            if (prevprev.length() > 0)
+                System.out.println("prevprev =" + prevprev);
+            if (prev.length() > 0)
+                System.out.println("prev =" + prev);
+            if (InputCode.get(i).length() > 0)
+                System.out.println("curr =" + InputCode.get(i));
+
+            if (i == InputCode.size())
+                break;
+
+            if (prev.contains("lw") && InputCode.elementAt(i).contains("add")
+                    ||
+                    prev.contains("lw") && InputCode.elementAt(i).contains("sub")) {
+
+                String curReg[] = InputCode.elementAt(i).split("[,]", 0);
+                String prevReg[] = prev.split("[,]", 0);
+                // String prevprevReg[] = prevprev.split("[,]", 0);
+
+                if (curReg[1].equals(prevReg[0]) || curReg[2].equals(prevReg[0])) {
+                    stallcount++;
+                    System.out.println("Stall detected in " + InputCode.elementAt(i));
+                }
+            }
+
+            else if ((prev.contains("add") && InputCode.elementAt(i).contains("add"))
+                    ||
+                    (prev.contains("sub") && InputCode.elementAt(i).contains("sub"))
+                    ||
+                    (prev.contains("add") && InputCode.elementAt(i).contains("sub"))
+                    ||
+                    (prev.contains("sub") && InputCode.elementAt(i).contains("add"))) {
+
+                System.out.println("DEPENDENCY DETECTED : " + prev + " -> " + InputCode.elementAt(i) + "\n");
+
+                String curReg[] = InputCode.elementAt(i).split("[,]", 0);
+                String prevReg[] = prev.split("[,]", 0);
+                String prevprevReg[] = prevprev.split("[,]", 0);
+
+                if (curReg[2].equals(prevReg[1]) || curReg[3].equals(prevReg[1])) {
+                    stallcount += check_for_stall(1, dataForwarding);
+                    System.out.println("Stall detected in " + InputCode.elementAt(i));
+                }
+
+                // if (prevprevReg.length > 0)
+                // if (curReg[2].equals(prevprevReg[1]) || curReg[3].equals(prevprevReg[1])) {
+                // stallcount += check_for_stall(2, dataForwarding);
+                // System.out.println("Stall detected in " + InputCode.elementAt(i));
+                // }
+
+            }
+            String temp = prev;
+            prev = InputCode.elementAt(i);
+            i++;
+            if (i > 1)
+                prevprev = temp;
+
         }
-        
+
+        System.out.println("\n\nData Forwarding: " + dataForwarding);
+        System.out.println("Stall count: " + stallcount);
+        return;
 
     }
+
+    // lw/sw after branching
+    // lw/sw don't get affected by branching
+
+    // decide how many prev line to consider while checking
 
     // check mips pipeline
     // prevTag, prevprevTag, currentTag
@@ -45,8 +145,8 @@ public class Pipelining {
     // }
     // }
 
-    private void lwAndAdd() {
-    }
+    // private void lwAndAdd() {
+    // }
 
     /*
      * 
@@ -54,7 +154,7 @@ public class Pipelining {
      * 
      * 
      * 
-     * queue of current, prev, prevprev
+     * queue of current, prev, prev
      * 
      * 
      * if add/sub
@@ -93,23 +193,23 @@ public class Pipelining {
      * 
      */
 
-    boolean dataForwarding = false;
+    // boolean dataForwarding = false;
 
-    int countStalls(int dependentLine, boolean dataForwarding) {
+    int check_for_stall(int dependentLineIndex, boolean dataForwarding) {
         int stalls = 0;
-        if (dependentLine == 1) { // prev line
+        if (dependentLineIndex == 1) { // prev line
             if (dataForwarding) {
                 stalls += 1;
             } else {
                 stalls += 2;
             }
-        } else if (dependentLine == 2) { // prev prev line
+        } else if (dependentLineIndex == 2) { // prev prev line
             if (dataForwarding) {
                 stalls += 0;
             } else {
                 stalls += 1;
             }
         }
-        return 0;
+        return stalls;
     }
 }

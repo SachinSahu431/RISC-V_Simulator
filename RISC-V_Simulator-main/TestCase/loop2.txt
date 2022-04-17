@@ -1,12 +1,24 @@
 .data
-
+array:
+      .word 10, 23, 23, 1
 .text
 .globl main
 
 main:
 addi s4, s4, 6
+addi s1, s1, 22
 addi s5, s5, 2
 addi s3, s3, 11 
+addi s6, s6, 100
+la s8, array
+
+add s4, s5, s3
+sub s2, s1, s6
+add s7, s4, s2
+
+# lw s9, 0(s4)
+
+
 Loop: 
       beq s4, s5, End
       add s3, s3, s5

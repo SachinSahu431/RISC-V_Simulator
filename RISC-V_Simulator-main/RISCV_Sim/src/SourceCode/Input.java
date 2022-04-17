@@ -60,7 +60,11 @@ public class Input extends Register {
         int i = 0;
         while (input.hasNextLine()) {
             String s = input.nextLine();
-            s = s.replaceAll("\\s", "");
+            System.out.println(s);
+            s = s.trim();
+            s = s.replace(", ", " ");
+            s = s.replaceAll("\\s", ",");
+            System.out.println(s);
             // STATEMENT MAPING LABELS WITH CORRESPONDING VALUE WHERE THEY HAVE TO RETURN
             if (s.indexOf(":") != -1)
                 labels.put(s.substring(0, s.indexOf(":")).trim(), i);
@@ -73,16 +77,17 @@ public class Input extends Register {
         // CHECK 0.0
         // System.out.print("-------------------------Let's Check
         // Input------------------");
-        // for(int j=0;j<InputCode.size();j++)
+        // for (int j = 0; j < InputCode.size(); j++)
         // System.out.println(InputCode.get(j));
 
         i = 0;
         while (i < InputCode.size()) {
             // SKIPPING THE LABEL PART
-            if (InputCode.elementAt(i).contains(":") || InputCode.elementAt(i).contains(".")) {
-                i++;
-                continue;
-            }
+            // if ((InputCode.elementAt(i).contains(":")) ||
+            // (InputCode.elementAt(i).contains("."))) {
+            // i++;
+            // continue;
+            // }
 
             String[] inst = InputCode.elementAt(i).split("[,]", 0);
             // CHECK 2.0
@@ -90,64 +95,70 @@ public class Input extends Register {
             System.out.println("Break outs: " + Arrays.toString(inst));
             System.out.println("-----------------------");
             if (InputCode.elementAt(i).contains("addi")) {
-                addi(regToIndex(inst[0].substring(4)), regToIndex(inst[1]), Integer.parseInt(inst[2]));
+                addi(regToIndex(inst[1]), regToIndex(inst[2]), Integer.parseInt(inst[3]));
             } else if (InputCode.elementAt(i).contains("add")) {
-                add(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+                add(regToIndex(inst[1]), regToIndex(inst[2]), regToIndex(inst[3]));
             } else if (InputCode.elementAt(i).contains("jne")) {
                 // Jump Command
             } else if (InputCode.elementAt(i).contains("jal")) {
                 // input_jal(inst[0].substring(3));
                 Register[1] = i + 1;
-                i = labels.get(inst[0].substring(3)) + 1;
+                i = labels.get(inst[1]);
             } else if (InputCode.elementAt(i).contains("ble")) {
-                if (Register[regToIndex(inst[0].substring(3))] < Register[regToIndex(inst[1])]) {
-                    i = labels.get(inst[2]) + 1;
+                if (Register[regToIndex(inst[1])] < Register[regToIndex(inst[2])]) {
+                    i = labels.get(inst[3]) + 1;
                 }
             } else if (InputCode.elementAt(i).contains("bne")) {
-                if (Register[regToIndex(inst[0].substring(3))] != Register[regToIndex(inst[1])]) {
-                    i = labels.get(inst[2]) + 1;
+                if (Register[regToIndex(inst[1])] != Register[regToIndex(inst[2])]) {
+                    i = labels.get(inst[3]) + 1;
                 }
             } else if (InputCode.elementAt(i).contains("bgt")) {
-                if (Register[regToIndex(inst[0].substring(3))] > Register[regToIndex(inst[1])]) {
-                    i = labels.get(inst[2]) + 1;
+                if (Register[regToIndex(inst[1])] > Register[regToIndex(inst[2])]) {
+                    i = labels.get(inst[3]) + 1;
                 }
             } else if (InputCode.elementAt(i).contains("beq")) {
-                if (Register[regToIndex(inst[0].substring(3))] == Register[regToIndex(inst[1])]) {
-                    i = labels.get(inst[2]) + 1;
+                if (Register[regToIndex(inst[1])] == Register[regToIndex(inst[2])]) {
+                    i = labels.get(inst[3]) + 1;
                 }
             } else if (InputCode.elementAt(i).contains("lw")) {
-                System.out.println("lw " + inst[0] + " " + inst[1]);
-                loadWord(regToIndex(inst[0].substring(2)), addressToIndex(inst[1]));
+                System.out.println("lw " + inst[1] + " " + inst[2]);
+                loadWord(regToIndex(inst[1]), addressToIndex(inst[2]));
             } else if (InputCode.elementAt(i).contains("li")) {
-                li(regToIndex(inst[0].substring(2)), Integer.parseInt(inst[1]));
+                li(regToIndex(inst[1]), Integer.parseInt(inst[2]));
             } else if (InputCode.elementAt(i).contains("sw")) {
-                System.out.println("sw " + inst[0] + " " + inst[1]);
-                storeWord(regToIndex(inst[0].substring(2)), addressToIndex(inst[1]));
+                System.out.println("sw " + inst[1] + " " + inst[2]);
+                storeWord(regToIndex(inst[1]), addressToIndex(inst[2]));
             } else if (InputCode.elementAt(i).contains("subi")) {
-                subi(regToIndex(inst[0].substring(4)), regToIndex(inst[1]), Integer.parseInt(inst[2]));
+                subi(regToIndex(inst[1]), regToIndex(inst[2]), Integer.parseInt(inst[3]));
             } else if (InputCode.elementAt(i).contains("sub")) {
-                sub(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+                sub(regToIndex(inst[1]), regToIndex(inst[2]), regToIndex(inst[3]));
             } else if (InputCode.elementAt(i).contains("mulh")) {
-                mulh(regToIndex(inst[0].substring(4)), regToIndex(inst[1]), regToIndex(inst[2]));
+                mulh(regToIndex(inst[1]), regToIndex(inst[2]), regToIndex(inst[3]));
             } else if (InputCode.elementAt(i).contains("mul")) {
-                mul(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+                mul(regToIndex(inst[1]), regToIndex(inst[2]), regToIndex(inst[3]));
             } else if (InputCode.elementAt(i).contains("div")) {
-                div(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+                div(regToIndex(inst[1]), regToIndex(inst[2]), regToIndex(inst[3]));
             } else if (InputCode.elementAt(i).contains("rem")) {
-                rem(regToIndex(inst[0].substring(3)), regToIndex(inst[1]), regToIndex(inst[2]));
+                rem(regToIndex(inst[1]), regToIndex(inst[2]), regToIndex(inst[3]));
             } else if (InputCode.elementAt(i).contains("jr") && InputCode.elementAt(i).contains("ra")) {
                 i = Register[1];
             } else if (InputCode.elementAt(i).contains("j")) {
-                System.out.println(inst[0].substring(1, inst[0].length()));
-                i = labels.get(inst[0].substring(1, inst[0].length()));
+                System.out.println(inst[1]);
+                i = labels.get(inst[1]);
             } else if (InputCode.elementAt(i).contains(".exit")) {
                 break;
+            } else if (InputCode.elementAt(i).contains(".word")) {
+                System.out.println("word wala section");
+                // data.workOnId(InputCode.elementAt(i));
             } else {
                 System.out.println(InputCode.elementAt(i) + " :Thinking to invent some new command here or what...");
             }
 
             i++;
         }
+        printAll();
+
+        goToPipelining();
     }
 
     // A method that converts input string which contains a target register to index
@@ -191,6 +202,7 @@ public class Input extends Register {
         System.out.println("regIndex = " + regIndex);
         System.out.println("data.getWord = " + data.getWord(offset / 4));
         System.out.println("memory wala  " + Memory[offset / 4]);
+        // System.out.println("data.getWord = " + data.getWord(2));
         // return (Register[regIndex] + (int) offset);
         // return 0;
         return (offset / 4);
@@ -271,4 +283,19 @@ public class Input extends Register {
                 return -1;
         }
     }
+
+    // Pipelining.dataForwarding(InputCode, dataForwarding);
+    Pipelining p = new Pipelining();
+
+    // void goToPipelining(Vector<String> InputCode, boolean dataForwarding) {
+    void goToPipelining() {
+        System.out.println("pipelining starts here");
+        p.ProcessPipeline(InputCode, false);
+    }
+
+    // void goToPipelining(InputCode, false);
+    // InputCode, false
+    // p.pipelining.ProcessPipeline
+    // goToPipelining(InputCode, false);
+
 }

@@ -56,6 +56,7 @@ public class DataSegment {
 
     private void setWords(String s) {
         try {
+            System.out.println("Inside setWords = " + s);
             // We presume all words are present in the string
             s = s.replaceAll("\\s", "");
             s = s + ",";
