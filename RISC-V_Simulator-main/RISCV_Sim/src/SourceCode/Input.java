@@ -20,6 +20,8 @@ public class Input extends Register {
     Vector<Labels> label = new Vector<Labels>();
     Vector<String> InputCode = new Vector<String>();
     Map<String, Integer> labels = new HashMap<String, Integer>();
+    Vector<String> ControlFlow = new Vector<String>();
+
     // Note : PC count in label is showing from which pc input is for label
 
     Input() throws FileNotFoundException {
@@ -27,15 +29,6 @@ public class Input extends Register {
                 "D:/SACHIN/Sachin_Docs/sem 4/CO/RISC project/gh/RISC-V_Simulator/RISC-V_Simulator-main/TestCase/loop2.txt");
         // "D:/SACHIN/Sachin_Docs/sem 4/CO/RISC
         // project/gh/RISC-V_Simulator/RISC-V_Simulator-main/TestCase/loop2.txt");
-        // gh\RISC-V_Simulator\RISC-V_Simulator-main\TestCase\loop2.txt
-        // "D:\\Work\\NOTES\\Computer
-        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test.txt");
-        // "D:\\Work\\NOTES\\Computer
-        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\loop2.txt");
-        // "D:\\Work\\NOTES\\Computer
-        // Organisation\\Project\\RISC-V_Simulator\\RISC-V_Simulator-main\\TestCase\\test2.txt");
-        // "RISC-V_Simulator-main/TestCase/BubbleSort3.txt");
-        // "RISC-V_Simulator-main/TestCase/BubbleSort2.txt");
         this.input = new Scanner(code);
     }
 
@@ -60,10 +53,12 @@ public class Input extends Register {
         int i = 0;
         while (input.hasNextLine()) {
             String s = input.nextLine();
-            System.out.println(s);
+            // System.out.println(s);
             s = s.trim();
             s = s.replace(", ", " ");
             s = s.replaceAll("\\s", ",");
+            if (s.length() == 0)
+                continue;
             System.out.println(s);
             // STATEMENT MAPING LABELS WITH CORRESPONDING VALUE WHERE THEY HAVE TO RETURN
             if (s.indexOf(":") != -1)
@@ -74,6 +69,8 @@ public class Input extends Register {
             InputCode.add(s);
             i++;
         }
+        System.out.println("***********************************************************");
+
         // CHECK 0.0
         // System.out.print("-------------------------Let's Check
         // Input------------------");
@@ -92,6 +89,7 @@ public class Input extends Register {
             String[] inst = InputCode.elementAt(i).split("[,]", 0);
             // CHECK 2.0
             System.out.println("Input Code: " + InputCode.elementAt(i));
+            ControlFlow.add(InputCode.elementAt(i));
             System.out.println("Break outs: " + Arrays.toString(inst));
             System.out.println("-----------------------");
             if (InputCode.elementAt(i).contains("addi")) {
@@ -145,10 +143,15 @@ public class Input extends Register {
             } else if (InputCode.elementAt(i).contains("j")) {
                 System.out.println(inst[1]);
                 i = labels.get(inst[1]);
+            } else if (InputCode.elementAt(i).contains("la")) {
+                System.out.println("LA HANDEL KAR BHAI");
+
+                // la(regToIndex(inst[1]), inst[2]);
             } else if (InputCode.elementAt(i).contains(".exit")) {
                 break;
             } else if (InputCode.elementAt(i).contains(".word")) {
-                System.out.println("word wala section");
+                System.out.println("word wala section" + InputCode.elementAt(i));
+                data.workOnId(inst, InputCode.elementAt(i));
                 // data.workOnId(InputCode.elementAt(i));
             } else {
                 System.out.println(InputCode.elementAt(i) + " :Thinking to invent some new command here or what...");
@@ -156,9 +159,18 @@ public class Input extends Register {
 
             i++;
         }
+
+        // printing the registers and memory done till now
+        Vector<Integer> temp = data.returnDataArray();
+        initArray(temp);
         printAll();
 
-        goToPipelining();
+        // print ControlFlow
+        // for (int j = 0; j < ControlFlow.size(); j++) {
+        // System.out.println(ControlFlow.elementAt(j));
+        // }
+
+        goToPipelining(ControlFlow);
     }
 
     // A method that converts input string which contains a target register to index
@@ -199,6 +211,10 @@ public class Input extends Register {
         int regIndex = regToIndex(rs);
         // Now We need to fetch value from this register and add it to offset which will
         // be returned
+
+        // print Memory
+        // System.out.println("MEMORY = ");
+        // printAll();
         System.out.println("regIndex = " + regIndex);
         System.out.println("data.getWord = " + data.getWord(offset / 4));
         System.out.println("memory wala  " + Memory[offset / 4]);
@@ -288,9 +304,10 @@ public class Input extends Register {
     Pipelining p = new Pipelining();
 
     // void goToPipelining(Vector<String> InputCode, boolean dataForwarding) {
-    void goToPipelining() {
+    void goToPipelining(Vector<String> ControlFlow) {
+        System.out.println("********************************");
         System.out.println("pipelining starts here");
-        p.ProcessPipeline(InputCode, false);
+        p.ProcessPipeline(ControlFlow, false, labels);
     }
 
     // void goToPipelining(InputCode, false);

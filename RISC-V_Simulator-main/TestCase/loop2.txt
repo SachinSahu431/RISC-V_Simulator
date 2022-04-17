@@ -1,22 +1,25 @@
 .data
 array:
-      .word 10, 23, 23, 1
+      .word 999, 23, 12, 22, 3, 83, 1
 .text
 .globl main
 
 main:
 addi s4, s4, 6
 addi s1, s1, 22
-addi s5, s5, 2
-addi s3, s3, 11 
+addi s5, s5, 1
+addi s3, s3, 4
 addi s6, s6, 100
+
 la s8, array
 
 add s4, s5, s3
 sub s2, s1, s6
 add s7, s4, s2
 
-# lw s9, 0(s4)
+lw s9, 0(s8)
+addi s9, s9, 1
+lw s10, 4(s8)
 
 
 Loop: 
@@ -27,4 +30,4 @@ Loop:
 End: 
 
       addi s6, s6, 999
-      #.exit
+

@@ -1,11 +1,14 @@
 package SourceCode;
 
+import java.util.Vector;
+
 public class Memory {
 
     int[] Register = new int[32]; // All required 32 registers int's
     // Memory should be of 4kb => 4000 Bytes
     // In our system 1 word corr. to 4 bytes of memory
-    int[] Memory = new int[1000]; // In words i.e. 4 bytes
+    static int[] Memory = new int[1000]; // In words i.e. 4 bytes
+    static int globalMemoryIndex = 0;
 
     // Constructor to initialise all of it's stuffs
     Memory() {
@@ -18,7 +21,18 @@ public class Memory {
     // this.Register[regIndex] = val;
     // }
     void loadWord(int regIndex, int memIndex) {
+        System.out.println(
+                "Loading word from memory[" + memIndex + "] = " + Memory[memIndex] + " to register[" + regIndex + "]");
         this.Register[regIndex] = Memory[memIndex];
+    }
+
+    // store the elements in data section in Memory
+    static void initArray(Vector<Integer> dataArray) {
+        for (int i = 0; i < dataArray.size(); i++) {
+            Integer val = dataArray.get(i);
+            Memory[globalMemoryIndex++] = val;
+        }
+
     }
 
     void storeWord(int regIndex, int memIndex) {

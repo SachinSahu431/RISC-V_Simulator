@@ -21,8 +21,9 @@ public class DataSegment {
     }
 
     // All inputs should be currently in a single line
-    void workOnId(String s) {
-        switch (this.id) {
+    void workOnId(String arr[], String s) {
+
+        switch (arr[0]) {
             case ".asciiz":
                 setAsciiz(s);
                 break;
@@ -30,13 +31,30 @@ public class DataSegment {
                 setString(s);
                 break;
             case ".word":
-                setWords(s);
+                setWords(arr, s);
                 break;
             default:
                 AssemblerNotPresent(s);
                 break;
         }
     }
+    // void workOnId(String s) {
+
+    // switch (this.id) {
+    // case ".asciiz":
+    // setAsciiz(s);
+    // break;
+    // case ".string":
+    // setString(s);
+    // break;
+    // case ".word":
+    // setWords(s);
+    // break;
+    // default:
+    // AssemblerNotPresent(s);
+    // break;
+    // }
+    // }
 
     private void setAsciiz(String s) {
         try {
@@ -54,19 +72,22 @@ public class DataSegment {
         }
     }
 
-    private void setWords(String s) {
+    private void setWords(String A[], String s) {
         try {
-            System.out.println("Inside setWords = " + s);
             // We presume all words are present in the string
-            s = s.replaceAll("\\s", "");
-            s = s + ",";
-            String[] A = s.split("[,]", 0);
-            for (int i = 0; i < A.length; i++)
+            System.out.println("Inside setWords = " + s);
+            for (int i = 1; i < A.length; i++)
                 this.valueInt.add(Integer.parseInt(A[i]));
             System.out.println(this.valueInt);
+            Memory.initArray(valueInt);
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            throw new UnsupportedOperationException(e);
+            // throw new UnsupportedOperationException("Not supported yet.");
         }
+    }
+
+    public Vector<Integer> returnDataArray() {
+        return valueInt;
     }
 
     private void AssemblerNotPresent(String s) {
