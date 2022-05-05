@@ -4,6 +4,26 @@ An attempt to make a RISC V Simulator using Java
 And further extending it to Graphical User interphase
 
 ---
+Printing the memory and registers
+
+![Memory](https://github.com/Samveg-techie/RISC-V_Simulator/blob/master/RISC-V_Simulator-main/Static/memPrint.png)
+
+Processed the input file
+
+![Input](https://github.com/Samveg-techie/RISC-V_Simulator/blob/master/RISC-V_Simulator-main/Static/input.png)
+
+Detected control flow
+
+![Control Flow](https://github.com/Samveg-techie/RISC-V_Simulator/blob/master/RISC-V_Simulator-main/Static/controlFlow.png)
+
+Detection of dependencies and stalls
+
+![Stall Detection](https://github.com/Samveg-techie/RISC-V_Simulator/blob/master/RISC-V_Simulator-main/Static/stall1.png)
+
+![Stall Detection](https://github.com/Samveg-techie/RISC-V_Simulator/blob/master/RISC-V_Simulator-main/Static/stall2.png)
+
+
+---
 
 \
 Progress till now:
